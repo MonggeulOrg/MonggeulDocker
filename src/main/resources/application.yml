@@ -1,0 +1,26 @@
+spring:
+
+  main:
+    allow-circular-references: true
+
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${{secrets.PROD_DB}}
+    username: ${{ secrets.RDS_USER_NAME }}
+    password: ${{ secrets.RDS_PW }}
+
+
+  jpa:
+
+    open-in-view: true
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    database: mysql
+
