@@ -14,6 +14,7 @@ import static com.cmc.monggeul.config.BaseResponseStatus.SUCCESS;
 public class UserController {
     @GetMapping("/user")
 
+    //
     public ResponseEntity<BaseResponse> userTest(){
         try{
             return ResponseEntity.ok(new BaseResponse<>(SUCCESS));
