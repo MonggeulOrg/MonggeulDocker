@@ -12,7 +12,7 @@ import static com.cmc.monggeul.config.BaseResponseStatus.SUCCESS;
 
 @RestController
 public class UserController {
-    @GetMapping("/user")
+    @GetMapping("/")
 
     //
     public ResponseEntity<BaseResponse> userTest(){
