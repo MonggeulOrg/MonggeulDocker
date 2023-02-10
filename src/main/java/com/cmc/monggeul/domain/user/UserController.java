@@ -22,4 +22,14 @@ public class UserController {
         }
 
     }
+    @GetMapping("/test")
+
+    public ResponseEntity<BaseResponse> userTest2(){
+        try{
+            return ResponseEntity.ok(new BaseResponse<>(SUCCESS));
+        } catch(BaseException exception){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new BaseResponse<>(BAD_REQUEST));
+        }
+
+    }
 }
