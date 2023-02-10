@@ -22,9 +22,8 @@ public class UserController {
         }
 
     }
-    @GetMapping("/test")
+    @GetMapping("/test1")
 
-    //
     public ResponseEntity<BaseResponse> userTest2(){
         try{
             return ResponseEntity.ok(new BaseResponse<>(SUCCESS));
