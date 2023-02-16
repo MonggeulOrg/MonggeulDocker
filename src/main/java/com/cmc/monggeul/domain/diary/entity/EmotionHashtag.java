@@ -4,10 +4,9 @@ import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -19,4 +18,10 @@ public class EmotionHashtag extends BaseEntity {
     private String text;
 
     private String hashtagImgUrl;
+
+    @OneToMany(mappedBy = "parentEmotionHashtag")
+    private List<Diary> parentDiaryList=new ArrayList<>();
+
+    @OneToMany(mappedBy = "childEmotionHashtag")
+    private List<Diary> childDiaryList=new ArrayList<>();
 }

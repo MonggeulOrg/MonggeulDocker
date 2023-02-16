@@ -9,16 +9,16 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${{RDSURL}}
-    username: ${{ RDSUSER }}
-    password: ${{ RDSPW }}
+    url: ${RDSURL}
+    username: ${RDSUSER}
+    password: ${RDSPW}
 
 
   jpa:
 
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       use-new-id-generator-mappings: false
