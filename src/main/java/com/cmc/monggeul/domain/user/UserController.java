@@ -1,14 +1,14 @@
 package com.cmc.monggeul.domain.user;
 
-import com.cmc.monggeul.config.BaseException;
-import com.cmc.monggeul.config.BaseResponse;
+import com.cmc.monggeul.global.config.BaseException;
+import com.cmc.monggeul.global.config.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.cmc.monggeul.config.BaseResponseStatus.BAD_REQUEST;
-import static com.cmc.monggeul.config.BaseResponseStatus.SUCCESS;
+import static com.cmc.monggeul.global.config.BaseResponseStatus.BAD_REQUEST;
+import static com.cmc.monggeul.global.config.BaseResponseStatus.SUCCESS;
 
 @RestController
 public class UserController {

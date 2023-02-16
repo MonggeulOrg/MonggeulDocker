@@ -9,9 +9,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${{secrets.PROD_DB}}
-    username: ${{ secrets.RDS_USER_NAME }}
-    password: ${{ secrets.RDS_PW }}
+    url: ${{RDSURL}}
+    username: ${{ RDSUSER }}
+    password: ${{ RDSPW }}
 
 
   jpa:

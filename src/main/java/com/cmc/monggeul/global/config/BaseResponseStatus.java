@@ -1,4 +1,4 @@
-package com.cmc.monggeul.config;
+package com.cmc.monggeul.global.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.cmc.monggeul.config.security;
+package com.cmc.monggeul.global.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
