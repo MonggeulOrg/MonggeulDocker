@@ -22,7 +22,7 @@ public class UserController {
         }
 
     }
-    @GetMapping("/test2")
+    @GetMapping("/test")
 
     public ResponseEntity<BaseResponse> userTest2(){
         try{
