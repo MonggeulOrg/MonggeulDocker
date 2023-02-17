@@ -1,35 +1,47 @@
 package com.cmc.monggeul.domain.user;
 
+import com.cmc.monggeul.domain.user.dto.PostKakaoLoginReq;
+import com.cmc.monggeul.domain.user.dto.PostKakaoLoginRes;
 import com.cmc.monggeul.global.config.BaseException;
 import com.cmc.monggeul.global.config.BaseResponse;
-import org.springframework.http.HttpStatus;
+import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import static com.cmc.monggeul.global.config.BaseResponseStatus.BAD_REQUEST;
-import static com.cmc.monggeul.global.config.BaseResponseStatus.SUCCESS;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
-    @GetMapping("/")
 
-    public ResponseEntity<BaseResponse> userTest(){
-        try{
-            return ResponseEntity.ok(new BaseResponse<>(SUCCESS));
-        } catch(BaseException exception){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new BaseResponse<>(BAD_REQUEST));
-        }
+
+    private final KakaoService kakaoService;
+
+    public UserController(KakaoService kakaoService) {
+        this.kakaoService = kakaoService;
+    }
+    //카카오 로그인 테스트
+
+    @GetMapping("/test/kakao")
+    public String  kakaoCallback(@RequestParam String code) throws BaseException {
+
+        return kakaoService.getKaKaoAccessToken(code);
 
     }
-    @GetMapping("/test2")
 
-    public ResponseEntity<BaseResponse> userTest2(){
-        try{
-            return ResponseEntity.ok(new BaseResponse<>(SUCCESS));
-        } catch(BaseException exception){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new BaseResponse<>(BAD_REQUEST));
-        }
+    @GetMapping("/test/kakao/login")
+    public void kakaoLoginTest(@RequestParam String token){
+        kakaoService.createKakaoUser(token);
 
     }
+
+
+    // 카카오 로그인
+    @PostMapping("/kakao/login")
+    public ResponseEntity<BaseResponse<PostKakaoLoginRes>>postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq){
+
+        return null;
+
+
+    }
+
+
 }

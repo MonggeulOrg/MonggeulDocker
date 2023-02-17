@@ -13,6 +13,7 @@ spring:
     username: monggeul
     password: monggeul1234!
 
+
   jpa:
 
     open-in-view: true

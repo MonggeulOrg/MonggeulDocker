@@ -28,6 +28,10 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    //gson
+    implementation'com.google.code.gson:gson:2.8.7'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'

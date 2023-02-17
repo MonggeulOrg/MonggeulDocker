@@ -20,9 +20,6 @@ public class SecurityConfig  {
 
     private JwtTokenProvider jwtTokenProvider;
 
-
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -32,7 +29,10 @@ public class SecurityConfig  {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/test").permitAll()
                 .antMatchers("/user/login").permitAll()
+                .antMatchers("/user/test/kakao").permitAll()
+                .antMatchers("/user/test/kakao/login").permitAll()
                 .antMatchers("/user/auth/**","/user/test").permitAll()
                 .anyRequest().authenticated() // 이밖에 모든 요청은 인증이 필요
                 .and()
