@@ -4,6 +4,8 @@ import com.cmc.monggeul.domain.user.entity.User;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -17,43 +19,23 @@ public class Diary {
     @JoinColumn(name = "questionId")
     private Question question;
 
-    // 1(user) : N(diary)
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="parentId")
-    private User parent;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="childId")
-    private User child;
-
     @Lob
-    private String parentText;
-
-    private String parentImgUrl;
-
-    private String childImgUrl;
-
+    private String text;
     @Lob
-    private String childText;
+    private String imageURL;
 
-    private DiaryStatus childDiaryStatus;
-
-    private DiaryStatus parentDiaryStatus;
 
 
     //  N(diary) : 1(hashtag)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="parentEmotionId")
-    private EmotionHashtag parentEmotionHashtag;
+    @JoinColumn(name="emotionId")
+    private EmotionHashtag emotionHashtag;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="childEmotionId")
-    private EmotionHashtag childEmotionHashtag;
+    // 1(diary) : N(sharing)
+    @OneToMany(mappedBy = "diary")
+    private List<UserDiarySharing> userDiarySharingList=new ArrayList<>();
 
-    enum DiaryStatus{
 
-        RESPONSE,
-        NO_RESPONSE
-    }
+
+
 }

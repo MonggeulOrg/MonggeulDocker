@@ -3,6 +3,7 @@ package com.cmc.monggeul.domain.user.entity;
 import com.cmc.monggeul.domain.alert.entity.Alert;
 import com.cmc.monggeul.domain.community.entity.Article;
 import com.cmc.monggeul.domain.diary.entity.Diary;
+import com.cmc.monggeul.domain.diary.entity.UserDiarySharing;
 import com.cmc.monggeul.domain.diary.entity.UserQuestionMapping;
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -57,11 +58,9 @@ public class User extends BaseEntity implements UserDetails  {
     private List<UserQuestionMapping> userQuestionMappings=new ArrayList<>();
 
     //[Diary]
-    @OneToMany(mappedBy = "child")
-    private List<Diary> children=new ArrayList<>();
-
-    @OneToMany(mappedBy = "parent")
-    private List<Diary> parents=new ArrayList<>();
+    // 1(user) : N(sharing)
+    @OneToMany(mappedBy = "user")
+    private List<UserDiarySharing> userDiarySharingList=new ArrayList<>();
 
     //[Alert]
     @OneToMany(mappedBy = "user")

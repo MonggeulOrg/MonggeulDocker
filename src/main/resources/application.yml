@@ -9,10 +9,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${ENDPOINT}:3306/${SCHEMA}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ${RDSUSER}
-    password: ${RDSPW}
-
+    url: jdbc:mysql://monggeuldb.c7pyd26tifkr.ap-northeast-2.rds.amazonaws.com:3306/MonggeulProd?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: monggeul
+    password: monggeul1234!
 
   jpa:
 
