@@ -1,4 +1,4 @@
-package com.cmc.monggeul.config;
+package com.cmc.monggeul.global.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.cmc.monggeul.config.BaseResponseStatus.SUCCESS;
+import static com.cmc.monggeul.global.config.BaseResponseStatus.SUCCESS;
 
 
 @Getter

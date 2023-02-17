@@ -8,6 +8,7 @@ public class MonggeulApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MonggeulApplication.class, args);
+        System.out.println("Build Success");
     }
 
 }

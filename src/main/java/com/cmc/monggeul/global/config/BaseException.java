@@ -1,4 +1,4 @@
-package com.cmc.monggeul.config;
+package com.cmc.monggeul.global.config;
 
 public class BaseException extends RuntimeException {
     private final BaseResponseStatus status;
