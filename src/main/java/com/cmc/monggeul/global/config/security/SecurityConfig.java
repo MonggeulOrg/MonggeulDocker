@@ -28,7 +28,7 @@ public class SecurityConfig  {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //jwt 사용
                 .and()
                 .authorizeRequests()
-                .antMatchers("/health").permitAll()
+                .antMatchers("/").permitAll()
                 .antMatchers("/test").permitAll()
                 .antMatchers("/user/login").permitAll()
                 .antMatchers("/user/test/kakao").permitAll()
