@@ -27,6 +27,17 @@ jobs:
             java-version: '11'
             distribution: 'adopt'
 
+      - name: Make Production Env
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+            envkey_RDS_HOSTNAME: ${{ secrets.RDS_HOSTNAME}}
+            envkey_RDS_DBNAME: ${{ secrets.RDS_DBNAME }}
+            envkey_RDS_USERNAME: ${{ secrets.RDS_USERNAME }}
+            envkey_RDS_PASSWORD: ${{ secrets.RDS_PASSWORD}}
+
+            file_name: .env.production
+            fail_on_empty: true
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 

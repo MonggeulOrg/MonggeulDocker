@@ -40,3 +40,6 @@ out/
 ## RDS ##
 /src/main/resources/application-dev-aws.yml
 /src/main/resources/application-dev.yml
+
+.env
+.env.production
