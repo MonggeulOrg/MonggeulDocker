@@ -9,9 +9,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${RDS.HOSTNAME}:3306/${RDS.DBNAME}
-    username: ${RDS.USERNAME}
-    password: ${RDS.PASSWORD}
+    url: jdbc:mysql://${secrets.RDS_HOSTNAME}:3306/${secrets.RDS_DBNAME}
+    username: ${secrets.RDS_USERNAME}
+    password: ${secrets.RDS_PASSWORD}
 
 
   jpa:
