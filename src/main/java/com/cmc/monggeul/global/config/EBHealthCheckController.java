@@ -10,7 +10,7 @@ import static com.cmc.monggeul.global.config.BaseResponseStatus.SUCCESS;
 
 @RestController
 public class EBHealthCheckController {
-    @GetMapping("/")
+    @GetMapping("/health")
 
     public ResponseEntity<BaseResponse> userTest(){
         try{
