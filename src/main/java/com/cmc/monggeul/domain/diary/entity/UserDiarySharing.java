@@ -9,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class UserDiarySharing {
 
+    // sharingId
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -2,11 +2,11 @@ package com.cmc.monggeul.domain.user.entity;
 
 import com.cmc.monggeul.domain.alert.entity.Alert;
 import com.cmc.monggeul.domain.community.entity.Article;
-import com.cmc.monggeul.domain.diary.entity.Diary;
 import com.cmc.monggeul.domain.diary.entity.UserDiarySharing;
 import com.cmc.monggeul.domain.diary.entity.UserQuestionMapping;
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -76,6 +76,9 @@ public class User extends BaseEntity implements UserDetails  {
     @OneToMany(mappedBy = "reviewer")
     private List<Article> reviewerList=new ArrayList<>();
 
+    public User() {
+        
+    }
 
 
     public enum OAuthType{
@@ -95,8 +98,16 @@ public class User extends BaseEntity implements UserDetails  {
         FIFTY,
         SIXTY
     }
+    @Builder
 
-    public User() {
+    public User(String name,String email,String profileImgUrl,Role role,Age age,OAuthType oAuthType,String matchingCode) {
+        this.name=name;
+        this.email=email;
+        this.profileImgUrl=profileImgUrl;
+        this.role=role;
+        this.age=age;
+        this.oAuthType=oAuthType;
+        this.matchingCode=matchingCode;
 
     }
 
@@ -112,7 +123,7 @@ public class User extends BaseEntity implements UserDetails  {
 
     @Override
     public String getUsername() {
-        return null;
+        return name;
     }
 
     @Override

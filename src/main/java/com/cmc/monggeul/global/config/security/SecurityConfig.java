@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig  {
 
     private JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -30,7 +31,7 @@ public class SecurityConfig  {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/test").permitAll()
-                .antMatchers("/user/login").permitAll()
+                .antMatchers("/user/kakao/login").permitAll()
                 .antMatchers("/user/test/kakao").permitAll()
                 .antMatchers("/user/test/kakao/login").permitAll()
                 .antMatchers("/user/auth/**","/user/test").permitAll()
@@ -48,7 +49,7 @@ public class SecurityConfig  {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

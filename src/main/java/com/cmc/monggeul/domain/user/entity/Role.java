@@ -3,6 +3,7 @@ package com.cmc.monggeul.domain.user.entity;
 import com.cmc.monggeul.domain.diary.entity.RoleCategoryMapping;
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.Entity;
@@ -24,6 +25,8 @@ public class Role extends BaseEntity {
 
     @OneToMany(mappedBy = "role")
     private List<RoleCategoryMapping> roleCategoryMappings = new ArrayList<>();
+
+
 
     public Role() {
 

@@ -24,5 +24,10 @@ spring:
       use-new-id-generator-mappings: false
     database: mysql
 
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 3000 #ms connection timeout
+
 
 
