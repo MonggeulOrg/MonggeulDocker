@@ -3,8 +3,6 @@ package com.cmc.monggeul.global.config.oauth.kakao;
 import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
 import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
-import com.cmc.monggeul.global.config.error.BaseResponseStatus;
-import com.cmc.monggeul.global.config.error.exception.JwtException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;

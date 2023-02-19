@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
 import com.cmc.monggeul.domain.user.dto.PostKakaoLoginReq;
+import com.cmc.monggeul.domain.user.dto.PostKakaoLoginRes;
 import com.cmc.monggeul.domain.user.entity.Role;
 import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.domain.user.repository.RoleRepository;
@@ -48,7 +49,7 @@ public class UserService {
 
 
 
-    public TokenDto kakaoLogin(PostKakaoLoginReq postKakaoLoginReq,KakaoUserDto kakaoUserDto) throws BaseException {
+    public PostKakaoLoginRes kakaoLogin(PostKakaoLoginReq postKakaoLoginReq, KakaoUserDto kakaoUserDto) throws BaseException {
 
         // 신규 가입 유저일경우
         if(userRepository.findByEmail(kakaoUserDto.getEmail()).isEmpty()){
@@ -88,6 +89,7 @@ public class UserService {
 
         Authentication authentication=new UsernamePasswordAuthenticationToken(kakaoUserDto.getEmail(),null,null);
         TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+        Optional<User> user=userRepository.findByEmail(kakaoUserDto.getEmail());
 
         // redis에 refresh token 저장
         // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
@@ -98,7 +100,12 @@ public class UserService {
 //        redisTemplate.opsForValue()
 //                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
 
-        return tokenDto;
+        return PostKakaoLoginRes.builder()
+                .grantType(tokenDto.getGrantType())
+                .accessToken(tokenDto.getAccessToken())
+                .refreshToken(tokenDto.getRefreshToken())
+                .code(user.get().getMatchingCode())
+                .build();
 
     }
 }

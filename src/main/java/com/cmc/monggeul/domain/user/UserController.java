@@ -2,6 +2,7 @@ package com.cmc.monggeul.domain.user;
 
 import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
 import com.cmc.monggeul.domain.user.dto.PostKakaoLoginReq;
+import com.cmc.monggeul.domain.user.dto.PostKakaoLoginRes;
 import com.cmc.monggeul.domain.user.service.UserService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.error.ErrorCode;
@@ -56,10 +57,10 @@ public class UserController {
 
     // 카카오 로그인
     @PostMapping("/kakao/login")
-    public ResponseEntity<BaseResponse<TokenDto>> postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) {
+    public ResponseEntity<BaseResponse<PostKakaoLoginRes>> postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) {
         KakaoUserDto kakaoUserDto=kakaoService.createKakaoUser(postKakaoLoginReq.getKakaoAccessToken());
-        TokenDto tokenDto=userService.kakaoLogin(postKakaoLoginReq,kakaoUserDto);
-        return ResponseEntity.ok(new BaseResponse<>(tokenDto));
+        PostKakaoLoginRes postKakaoLoginRes=userService.kakaoLogin(postKakaoLoginReq,kakaoUserDto);
+        return ResponseEntity.ok(new BaseResponse<>(postKakaoLoginRes));
     }
 
     @GetMapping ("/hello")

@@ -36,13 +36,13 @@ public enum ErrorCode {
 
     private final HttpStatus httpStatus;
     private final int code;
-    private final String errorMessage;
+    private final String message;
 
-   ErrorCode( HttpStatus httpStatus, int code, String errorMessage) {
+   ErrorCode( HttpStatus httpStatus, int code, String message) {
 
         this.httpStatus = httpStatus;
         this.code = code;
-        this.errorMessage = errorMessage;
+        this.message = message;
     }
 
 

@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     ) {
         log.error("[HttpRequestMethodNotSupportedException] " +
                         "url: {} | errorType: {} | errorMessage: {} | cause Exception: ",
-                request.getRequestURL(), INVALID_HTTP_METHOD, INVALID_HTTP_METHOD.getErrorMessage(), e);
+                request.getRequestURL(), INVALID_HTTP_METHOD, INVALID_HTTP_METHOD.getMessage(), e);
 
         return ResponseEntity
                 .status(INVALID_HTTP_METHOD.getHttpStatus())
@@ -87,23 +87,23 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<BaseResponse<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return ResponseEntity.badRequest().body(new BaseResponse<>(BaseResponseStatus.BAD_REQUEST));
+        return ResponseEntity.badRequest().body(new BaseResponse<>(ErrorCode.BAD_REQUEST));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<BaseResponse<?>> handleMissingServletRequestParameterException(
             MissingServletRequestParameterException e) {
-        return ResponseEntity.badRequest().body(new BaseResponse<>(BaseResponseStatus.BAD_REQUEST));
+        return ResponseEntity.badRequest().body(new BaseResponse<>(ErrorCode.BAD_REQUEST));
     }
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<BaseResponse<?>> handleBindException(BindException e) {
-        return ResponseEntity.badRequest().body(new BaseResponse<>(BaseResponseStatus.BAD_REQUEST));
+        return ResponseEntity.badRequest().body(new BaseResponse<>(ErrorCode.BAD_REQUEST));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<BaseResponse<?>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        return ResponseEntity.badRequest().body(new BaseResponse<>(BaseResponseStatus.BAD_REQUEST));
+        return ResponseEntity.badRequest().body(new BaseResponse<>(ErrorCode.BAD_REQUEST));
     }
 
     // Application Exception
