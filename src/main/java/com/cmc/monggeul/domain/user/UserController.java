@@ -79,5 +79,4 @@ public class UserController {
 
     // 매칭 유효성 검사 (이미 매칭이 되었다면 유료 요금제로 전환하라고 알려줘야함)
 
-
 }
