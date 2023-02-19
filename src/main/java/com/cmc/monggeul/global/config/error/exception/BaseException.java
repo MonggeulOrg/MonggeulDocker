@@ -8,10 +8,10 @@ public class BaseException extends RuntimeException {
     private final String errorMessage;
 
     public BaseException(ErrorCode errorcode) {
-        super(errorcode.getErrorMessage());
+        super(errorcode.getMessage());
         this.errorCode = errorcode;
         this.code = errorcode.getCode();
-        this.errorMessage = errorcode.getErrorMessage();
+        this.errorMessage = errorcode.getMessage();
     }
 
     public BaseException(ErrorCode errorcode, String errorMessage) {
@@ -23,10 +23,10 @@ public class BaseException extends RuntimeException {
 
     // With Cause Exception
     public BaseException(ErrorCode errorcode, Exception cause) {
-        super(errorcode.getErrorMessage(), cause);
+        super(errorcode.getMessage(), cause);
         this.errorCode = errorcode;
         this.code = errorcode.getCode();
-        this.errorMessage = errorcode.getErrorMessage();
+        this.errorMessage = errorcode.getMessage();
     }
 
     public BaseException(ErrorCode errorcode, String errorMessage, Exception cause) {

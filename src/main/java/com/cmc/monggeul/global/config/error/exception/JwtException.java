@@ -12,10 +12,10 @@ public class JwtException extends RuntimeException {
 
     // Without Cause Exception
     public JwtException(ErrorCode errorcode) {
-        super(errorcode.getErrorMessage());
+        super(errorcode.getMessage());
         this.jwtErrorCode = errorcode;
         this.code = errorcode.getCode();
-        this.errorMessage = errorcode.getErrorMessage();
+        this.errorMessage = errorcode.getMessage();
     }
 
     public JwtException(ErrorCode errorcode, String errorMessage) {
@@ -27,10 +27,10 @@ public class JwtException extends RuntimeException {
 
     // With Cause Exception
     public JwtException(ErrorCode errorcode, Exception cause) {
-        super(errorcode.getErrorMessage(), cause);
+        super(errorcode.getMessage(), cause);
         this.jwtErrorCode = errorcode;
         this.code = errorcode.getCode();
-        this.errorMessage = errorcode.getErrorMessage();
+        this.errorMessage = errorcode.getMessage();
     }
 
     public JwtException(ErrorCode errorcode, String errorMessage, Exception cause) {
