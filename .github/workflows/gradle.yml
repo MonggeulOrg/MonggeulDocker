@@ -63,7 +63,7 @@ jobs:
 
       - name: web docker build and push
         run: |
-          docker build -f Dockerfile-nginx -t ${{ secrets.DOCKER_REPO }}/monggeul-web .
+          docker build -t ${{ secrets.DOCKER_REPO }}/monggeul-web .
           docker push ${{ secrets.DOCKER_REPO }}/monggeul-web
 
       ## docker compose up
