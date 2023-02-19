@@ -12,14 +12,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: checkout
-        uses: actions/checkout@v3
-
+      ## jdk setting
+      - uses: actions/checkout@v3
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'temurin'
+          distribution: 'temurin' # https://github.com/actions/setup-java
+
+      ## gradle caching
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       ## create application-database.yaml
       - name: make application-database.yaml
@@ -47,7 +57,7 @@ jobs:
       - name: web docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/monggeul-web .
+          docker build -f Dockerfile-nginx -t ${{ secrets.DOCKER_REPO }}/monggeul-web .
           docker push ${{ secrets.DOCKER_REPO }}/monggeul-web
 
       ## docker compose up
@@ -55,7 +65,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
-          username: ubuntu
+          username: ec2-user
           key: ${{ secrets.KEY }}
           script: |
             sudo docker rm -f $(docker ps -qa)
