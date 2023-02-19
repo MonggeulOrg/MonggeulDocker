@@ -62,7 +62,7 @@ public class UserController {
         PostKakaoLoginRes postKakaoLoginRes=userService.kakaoLogin(postKakaoLoginReq,kakaoUserDto);
         return ResponseEntity.ok(new BaseResponse<>(postKakaoLoginRes));
     }
-
+//
     @GetMapping ("/hello")
     ResponseEntity<BaseResponse<String>>sayHi(){
         return  ResponseEntity.ok(new BaseResponse<>("Hi"));
