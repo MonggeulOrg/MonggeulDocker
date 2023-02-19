@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+  web:
+    container_name: web
+    image: jungminleeee/monggeul-docker-web
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+# second-eyes-nginx 을 monggeul-docker로 이미지 구웠음
+  nginx:
+    container_name: nginx
+    image: jungminleeee/monggeul-docker
+    ports:
+      - 80:80
+    depends_on:
+      - web

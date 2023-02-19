@@ -1,8 +1,9 @@
 package com.cmc.monggeul.global.config.security;
 
+import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationEntryPoint;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,11 +16,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SecurityConfig  {
 
     private JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -28,17 +32,11 @@ public class SecurityConfig  {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //jwt 사용
                 .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/test").permitAll()
-                .antMatchers("/user/kakao/login").permitAll()
-                .antMatchers("/user/test/kakao").permitAll()
-                .antMatchers("/user/test/kakao/login").permitAll()
-                .antMatchers("/user/auth/**","/user/test").permitAll()
-                .anyRequest().authenticated() // 이밖에 모든 요청은 인증이 필요
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
 
 
 

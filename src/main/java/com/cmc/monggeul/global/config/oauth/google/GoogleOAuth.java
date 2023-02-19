@@ -1,12 +1,10 @@
 package com.cmc.monggeul.global.config.oauth.google;
 
-import com.cmc.monggeul.global.config.BaseException;
+import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-import org.json.simple.parser.JSONParser;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -18,8 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.HashMap;

@@ -1,27 +1,12 @@
 package com.cmc.monggeul.global.config.security.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.cmc.monggeul.global.config.BaseException;
-import com.cmc.monggeul.global.config.BaseResponseStatus;
 import io.jsonwebtoken.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -74,27 +59,6 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    // Jwt 토큰 유효성 검사
-    public static boolean validateToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
-            return true;
-        } catch (SignatureException ex) {
-            log.error("Invalid JWT signature");
-
-        } catch (MalformedJwtException ex) {
-
-        } catch (ExpiredJwtException ex) {
-
-        } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
-            throw ex;
-        } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
-
-        }
-        return false;
-    }
 
 
 }

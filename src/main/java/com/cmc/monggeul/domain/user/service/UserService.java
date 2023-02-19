@@ -8,6 +8,7 @@ import com.cmc.monggeul.domain.user.entity.Role;
 import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.domain.user.repository.RoleRepository;
 import com.cmc.monggeul.domain.user.repository.UserRepository;
+import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.cmc.monggeul.global.config.security.SecurityConfig;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
@@ -47,9 +48,9 @@ public class UserService {
 
 
 
-    public TokenDto kakaoLogin(PostKakaoLoginReq postKakaoLoginReq,KakaoUserDto kakaoUserDto) throws Exception {
+    public TokenDto kakaoLogin(PostKakaoLoginReq postKakaoLoginReq,KakaoUserDto kakaoUserDto) throws BaseException {
 
-        // 바로 accesstoken 발급진행
+        // 신규 가입 유저일경우
         if(userRepository.findByEmail(kakaoUserDto.getEmail()).isEmpty()){
 
             String matchCode=generateCertNumber.excuteGenerate();
@@ -62,20 +63,13 @@ public class UserService {
                     break;
                 }
 
-
             }
 
-
-
             // 유저 role 저장
-
             Role role=roleRepository.findByRoleCode(postKakaoLoginReq.getRole());
-
 
             // 유저 나이 저장
             User.Age age=Enum.valueOf(User.Age.class, postKakaoLoginReq.getAge());
-
-
 
 
             User user=User.builder()

@@ -1,8 +1,10 @@
 package com.cmc.monggeul.global.config.oauth.kakao;
 
 import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
-import com.cmc.monggeul.global.config.BaseException;
-import com.cmc.monggeul.global.config.BaseResponseStatus;
+import com.cmc.monggeul.global.config.error.ErrorCode;
+import com.cmc.monggeul.global.config.error.exception.BaseException;
+import com.cmc.monggeul.global.config.error.BaseResponseStatus;
+import com.cmc.monggeul.global.config.error.exception.JwtException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;
@@ -85,7 +87,8 @@ public class KakaoService {
             //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
             if(responseCode!=200){
-                throw new BaseException(BaseResponseStatus.INVALID_KAKAO_ACCESS_TOKEN);
+                throw new BaseException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN);
+
             }
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
@@ -103,7 +106,7 @@ public class KakaoService {
             JsonElement element = parser.parse(result);
             Integer expires_in = element.getAsJsonObject().get("expires_in").getAsInt();
             if(expires_in<=10){
-                throw new BaseException(BaseResponseStatus.INVALID_KAKAO_ACCESS_TOKEN);
+                throw new BaseException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN);
             }
 
 

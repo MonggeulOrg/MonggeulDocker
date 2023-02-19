@@ -3,14 +3,18 @@ package com.cmc.monggeul.domain.user;
 import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
 import com.cmc.monggeul.domain.user.dto.PostKakaoLoginReq;
 import com.cmc.monggeul.domain.user.service.UserService;
-import com.cmc.monggeul.global.config.BaseException;
-import com.cmc.monggeul.global.config.BaseResponse;
+import com.cmc.monggeul.global.config.error.BaseResponse;
+import com.cmc.monggeul.global.config.error.ErrorCode;
+import com.cmc.monggeul.global.config.error.exception.BaseException;
+import com.cmc.monggeul.global.config.error.exception.JwtException;
 import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +36,15 @@ public class UserController {
     }
 
     @GetMapping("/test/kakao/login")
-    public void kakaoLoginTest(@RequestParam String token){
-        kakaoService.createKakaoUser(token);
+    public ResponseEntity kakaoLoginTest(@RequestParam String token){
+       try{
+           return ResponseEntity.ok(kakaoService.createKakaoUser(token));
+       }catch (BaseException e){
+           return ResponseEntity.status(e.getCode()).body(e.getMessage());
+       }catch(JwtException e){
+           System.out.println(e.getMessage());
+           return ResponseEntity.status(e.getCode()).body(e.getMessage());
+       }
 
     }
 
@@ -45,20 +56,19 @@ public class UserController {
 
     // 카카오 로그인
     @PostMapping("/kakao/login")
-    public ResponseEntity<BaseResponse<TokenDto>>postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) throws BaseException {
-
-        try {
-            KakaoUserDto kakaoUserDto=kakaoService.createKakaoUser(postKakaoLoginReq.getKakaoAccessToken());
-            TokenDto tokenDto=userService.kakaoLogin(postKakaoLoginReq,kakaoUserDto);
-            return ResponseEntity.ok(new BaseResponse<>(tokenDto));
-
-        } catch (BaseException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(e.getStatus()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+    public ResponseEntity<BaseResponse<TokenDto>> postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) {
+        KakaoUserDto kakaoUserDto=kakaoService.createKakaoUser(postKakaoLoginReq.getKakaoAccessToken());
+        TokenDto tokenDto=userService.kakaoLogin(postKakaoLoginReq,kakaoUserDto);
+        return ResponseEntity.ok(new BaseResponse<>(tokenDto));
     }
+
+    @GetMapping ("/hello")
+    ResponseEntity<BaseResponse<String>>sayHi(){
+        return  ResponseEntity.ok(new BaseResponse<>("Hi"));
+    }
+
+
+
 
     // 구글 로그인
 
