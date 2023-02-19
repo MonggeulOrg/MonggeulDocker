@@ -95,8 +95,8 @@ public class UserService {
         DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
         System.out.println(decodedJWT.getToken().toString());
 
-        redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+//        redisTemplate.opsForValue()
+//                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
 
         return tokenDto;
 
