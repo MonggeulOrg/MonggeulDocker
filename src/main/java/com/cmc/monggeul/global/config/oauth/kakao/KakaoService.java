@@ -1,6 +1,10 @@
 package com.cmc.monggeul.global.config.oauth.kakao;
 
-import com.cmc.monggeul.global.config.BaseException;
+import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
+import com.cmc.monggeul.global.config.error.ErrorCode;
+import com.cmc.monggeul.global.config.error.exception.BaseException;
+import com.cmc.monggeul.global.config.error.BaseResponseStatus;
+import com.cmc.monggeul.global.config.error.exception.JwtException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;
@@ -65,9 +69,51 @@ public class KakaoService {
 
         return access_Token;
     }
-    public void createKakaoUser(String token) throws BaseException {
+    public KakaoUserDto createKakaoUser(String token) throws BaseException {
+        String validReqUrl="https://kapi.kakao.com/v1/user/access_token_info";
 
         String reqURL = "https://kapi.kakao.com/v2/user/me";
+
+        // 유저의 카카오 access token 유효성 검사 (유효시간이 10초 남으면 다시 발급 받기)
+
+        try {
+            URL url = new URL(validReqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
+
+            //결과 코드가 200이라면 성공
+            int responseCode = conn.getResponseCode();
+            if(responseCode!=200){
+                throw new BaseException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN);
+
+            }
+
+            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            String result = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+            System.out.println("response body : " + result);
+
+            //Gson 라이브러리로 JSON파싱
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+            Integer expires_in = element.getAsJsonObject().get("expires_in").getAsInt();
+            if(expires_in<=10){
+                throw new BaseException(ErrorCode.INVALID_KAKAO_ACCESS_TOKEN);
+            }
+
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
 
         //access_token을 이용하여 사용자 정보 조회
         try {
@@ -103,13 +149,19 @@ public class KakaoService {
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             }
 
-            System.out.println("id : " + id);
-            System.out.println("email : " + email);
+            String profileImgUrl=element.getAsJsonObject().get("properties").getAsJsonObject().get("profile_image").getAsString();
+
 
             br.close();
+
+            return KakaoUserDto.builder()
+                    .email(email)
+                    .profileImgUrl(profileImgUrl)
+                    .build();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 }

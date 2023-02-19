@@ -9,7 +9,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://monggeuldb.c7pyd26tifkr.ap-northeast-2.rds.amazonaws.com:3306/MonggeulProd
+    url: jdbc:mysql://monggeuldb.c7pyd26tifkr.ap-northeast-2.rds.amazonaws.com:3306/MonggeulDev?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: monggeul
     password: monggeul1234!
 
@@ -23,6 +23,11 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       use-new-id-generator-mappings: false
     database: mysql
+
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    timeout: 3000 #ms connection timeout
 
 
 
