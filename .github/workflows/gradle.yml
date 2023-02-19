@@ -57,7 +57,7 @@ jobs:
       - name: web docker build and push
         if: contains(github.ref, 'main')
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          winpty docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile-nginx -t ${{ secrets.DOCKER_REPO }}/monggeul-web .
           docker push ${{ secrets.DOCKER_REPO }}/monggeul-web
 
