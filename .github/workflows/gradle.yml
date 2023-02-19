@@ -55,6 +55,7 @@ jobs:
 
       ## 웹 이미지 빌드 및 도커허브에 push
       - name: web docker build and push
+        if: contains(github.ref, 'main')
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile-nginx -t ${{ secrets.DOCKER_REPO }}/monggeul-web .
