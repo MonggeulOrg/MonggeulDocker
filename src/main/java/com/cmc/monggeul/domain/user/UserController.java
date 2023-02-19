@@ -22,7 +22,6 @@ import java.util.NoSuchElementException;
 @RequestMapping("/user")
 public class UserController {
 
-
     // 생성자 주입
     private final KakaoService kakaoService;
     private final UserService userService;
