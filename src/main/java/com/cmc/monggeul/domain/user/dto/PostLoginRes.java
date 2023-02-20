@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PostKakaoLoginRes {
+public class PostLoginRes {
     private String grantType;
     private String accessToken;
     private String refreshToken;

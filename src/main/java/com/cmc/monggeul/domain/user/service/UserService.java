@@ -2,14 +2,13 @@ package com.cmc.monggeul.domain.user.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
-import com.cmc.monggeul.domain.user.dto.PostKakaoLoginReq;
-import com.cmc.monggeul.domain.user.dto.PostKakaoLoginRes;
+import com.cmc.monggeul.domain.user.dto.*;
 import com.cmc.monggeul.domain.user.entity.Role;
 import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.domain.user.repository.RoleRepository;
 import com.cmc.monggeul.domain.user.repository.UserRepository;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
+import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
 import com.cmc.monggeul.global.config.security.SecurityConfig;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
@@ -20,12 +19,16 @@ import io.lettuce.core.models.role.RedisInstance;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -46,10 +49,12 @@ public class UserService {
 
     private final GenerateCertNumber generateCertNumber;
 
+    private final GoogleOAuth googleOAuth;
 
 
 
-    public PostKakaoLoginRes kakaoLogin(PostKakaoLoginReq postKakaoLoginReq, KakaoUserDto kakaoUserDto) throws BaseException {
+
+    public PostLoginRes kakaoLogin(PostKakaoLoginReq postKakaoLoginReq, KakaoUserDto kakaoUserDto) throws BaseException {
 
         // 신규 가입 유저일경우
         if(userRepository.findByEmail(kakaoUserDto.getEmail()).isEmpty()){
@@ -100,7 +105,7 @@ public class UserService {
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
 
-        return PostKakaoLoginRes.builder()
+        return PostLoginRes.builder()
                 .grantType(tokenDto.getGrantType())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshToken(tokenDto.getRefreshToken())
@@ -108,4 +113,66 @@ public class UserService {
                 .build();
 
     }
+    public PostLoginRes googleLogin(PostGoogleLoginReq postGoogleLoginReq, GoogleUserDto googleUserDto) throws BaseException {
+
+        // 신규 가입 유저일경우
+        if(userRepository.findByEmail(googleUserDto.getEmail()).isEmpty()){
+
+            String matchCode=generateCertNumber.excuteGenerate();
+
+            while(true){
+                Optional<User>user=userRepository.findByMatchingCode(matchCode);
+                if(user.isPresent()){
+                    matchCode=generateCertNumber.excuteGenerate();
+                }else{
+                    break;
+                }
+
+            }
+
+            // 유저 role 저장
+            Role role=roleRepository.findByRoleCode(postGoogleLoginReq.getRole());
+
+            // 유저 나이 저장
+            User.Age age=Enum.valueOf(User.Age.class, postGoogleLoginReq.getAge());
+
+
+            User user=User.builder()
+                    .name(postGoogleLoginReq.getUserName())
+                    .email(googleUserDto.getEmail())
+                    .role(role)
+                    .age(age)
+                    .profileImgUrl(googleUserDto.getProfileImgUrl())
+                    .oAuthType(User.OAuthType.GOOGLE)
+                    .matchingCode(matchCode)
+                    .build();
+
+            userRepository.save(user);
+
+        }
+
+        Authentication authentication=new UsernamePasswordAuthenticationToken(googleUserDto.getEmail(),null,null);
+        TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+        Optional<User> user=userRepository.findByEmail(googleUserDto.getEmail());
+
+        // redis에 refresh token 저장
+        // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+        // refresh token을 복호화한 후 만료기한을 redis에 저장할 것
+        DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
+        System.out.println(decodedJWT.getToken().toString());
+
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+
+        return PostLoginRes.builder()
+                .grantType(tokenDto.getGrantType())
+                .accessToken(tokenDto.getAccessToken())
+                .refreshToken(tokenDto.getRefreshToken())
+                .code(user.get().getMatchingCode())
+                .build();
+
+    }
+
+
+
 }
