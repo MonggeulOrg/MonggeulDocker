@@ -28,7 +28,7 @@ spring:
         max-active: 5 # pool에 할당될 수 있는 커넥션 최대수
         max-idle: 5 # pool의 'idle' 커넥션 최대수
         min-idle: 2
-    host: 127.0.0.1
+    host: 'redis-server'
     port: 6379
     timeout: 3000 #ms connection timeout
 
