@@ -54,15 +54,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         request.getMethod();
         AntPathMatcher pathMatcher = new AntPathMatcher();
         return (
-                // TODO 인증이 필요없는 로직 추가
                 (pathMatcher.match("/user/test/kakao", path) && request.getMethod().equals("GET")) ||
                         (pathMatcher.match("/user/kakao/login", path) && request.getMethod().equals("POST")) ||
                         (pathMatcher.match("/user/test/kakao/login",path) &&request.getMethod().equals("GET")||
-                        pathMatcher.match("/swagger-ui/**", path) ||
+                                (pathMatcher.match("/user/test/google",path) &&request.getMethod().equals("GET")||
+                                        pathMatcher.match("/user/test/google/code",path) &&request.getMethod().equals("GET")||
+                                        pathMatcher.match("/login/oauth2/code/google",path) &&request.getMethod().equals("GET")||
+                                        pathMatcher.match("/user/test/google/access",path)&&request.getMethod().equals("GET")||
+                                        pathMatcher.match("/user/google/login",path)&&request.getMethod().equals("POST")||
+                                        pathMatcher.match("/swagger-ui/**", path) ||
                         pathMatcher.match("/favicon.ico", path) ||
                         pathMatcher.match("/swagger-resources/**", path) ||
                         pathMatcher.match("/v3/api-docs", path)
-        ));
+        )));
     }
 
 

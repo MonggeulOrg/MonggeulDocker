@@ -22,14 +22,10 @@ public class GoogleOAuthService {
 
     public GoogleOAuthToken oAuthLogin(String code) throws IOException, ParseException, org.json.simple.parser.ParseException {
 
-
-
         ResponseEntity<String> accessTokenResponse= googleOauth.requestAccessToken(code);
         //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
         GoogleOAuthToken oAuthToken=googleOauth.getAccessToken(accessTokenResponse);
-
-
-
+        System.out.println(oAuthToken.getAccess_token());
         return oAuthToken;
 
     }

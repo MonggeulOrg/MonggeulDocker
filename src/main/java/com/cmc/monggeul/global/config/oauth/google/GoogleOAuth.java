@@ -1,10 +1,14 @@
 package com.cmc.monggeul.global.config.oauth.google;
 
+import com.cmc.monggeul.domain.user.dto.GoogleUserDto;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -27,17 +31,14 @@ public class GoogleOAuth {
     //applications.yml 에서 value annotation을 통해서 값을 받아온다.
     private String GOOGLE_SNS_LOGIN_URL="https://accounts.google.com/o/oauth2/v2/auth";
 
-
-    private String GOOGLE_SNS_CLIENT_ID="1078527416021-a3p9mn4i1a0vid1uog9lh4eg51ad1m0h.apps.googleusercontent.com";
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String GOOGLE_SNS_CLIENT_ID;
 
     private String GOOGLE_SNS_CALLBACK_URL="http://localhost:8080/login/oauth2/code/google";
 
-
-    private String GOOGLE_SNS_CLIENT_SECRET="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";
-
-    private String GOOGLE_DATA_ACCESS_SCOPE="https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
-
-    //scope 환경변수로 받지 말고 여기서 string으로 처리해보기
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String GOOGLE_SNS_CLIENT_SECRET;
+    private String GOOGLE_DATA_ACCESS_SCOPE="https://www.googleapis.com/auth/userinfo.email";
 
 
 
@@ -86,16 +87,16 @@ public class GoogleOAuth {
 
     public GoogleOAuthToken getAccessToken(ResponseEntity<String> response) throws JsonProcessingException, ParseException, org.json.simple.parser.ParseException {
         System.out.println("response.getBody() = " + response.getBody());
-        JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(response.getBody());
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response.getBody());
 
         // JSON 객체의 값 읽어서 출력하기
-        String accessToken= element.getAsJsonObject().get("access_token").getAsString();
+        String accessToken= (String) jsonObject.get("access_token");
         return new GoogleOAuthToken(accessToken);
 
     }
 
-    public ResponseEntity<String> requestUserInfo(String oAuthToken) {
+    public GoogleUserDto requestUserInfo(String oAuthToken) throws org.json.simple.parser.ParseException {
         RestTemplate restTemplate = new RestTemplate();
         String GOOGLE_USERINFO_REQUEST_URL="https://www.googleapis.com/oauth2/v1/userinfo";
 
@@ -107,9 +108,20 @@ public class GoogleOAuth {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
         ResponseEntity<String> response=restTemplate.exchange(GOOGLE_USERINFO_REQUEST_URL, HttpMethod.GET,request,String.class);
         System.out.println("response.getBody() = " + response.getBody());
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response.getBody());
 
-        return response;
+        // JSON 객체의 값 읽어서 출력하기
+        String email= (String) jsonObject.get("email");
+        String picture= (String) jsonObject.get("picture");
+
+        return GoogleUserDto.builder()
+                .profileImgUrl(picture)
+                .email(email)
+                .build();
+
     }
+
 
     public GoogleUser getUserInfo(ResponseEntity<String> userInfoRes) throws JsonProcessingException{
         ObjectMapper objectMapper = new ObjectMapper();
@@ -129,61 +141,11 @@ public class GoogleOAuth {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
         ResponseEntity<String> response=restTemplate.exchange(GOOGLE_VALID_REQUEST_URL, HttpMethod.GET,request,String.class);
         System.out.println("validate_res= "+response.getBody());
-        JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(response.getBody());
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response.getBody());
 
         // JSON 객체의 값 읽어서 출력하기
-        String sub= element.getAsJsonObject().get("sub").getAsString();
-
+        String sub= (String) jsonObject.get("sub");
         return sub;
     }
-
-    public void createKakaoUser(String token) throws BaseException {
-
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
-
-        //access_token을 이용하여 사용자 정보 조회
-        try {
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
-
-            //결과 코드가 200이라면 성공
-            int responseCode = conn.getResponseCode();
-            System.out.println("responseCode : " + responseCode);
-
-            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
-
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-            System.out.println("response body : " + result);
-
-            //Gson 라이브러리로 JSON파싱
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-
-            Long id = element.getAsJsonObject().get("id").getAsLong();
-            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-            String email = "";
-            if (hasEmail) {
-                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-            }
-
-            System.out.println("id : " + id);
-            System.out.println("email : " + email);
-
-            br.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

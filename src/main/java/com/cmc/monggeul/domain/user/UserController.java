@@ -1,13 +1,15 @@
 package com.cmc.monggeul.domain.user;
 
-import com.cmc.monggeul.domain.user.dto.KakaoUserDto;
+import com.cmc.monggeul.domain.user.dto.*;
 import com.cmc.monggeul.domain.user.dto.PostKakaoLoginReq;
-import com.cmc.monggeul.domain.user.dto.PostKakaoLoginRes;
 import com.cmc.monggeul.domain.user.service.UserService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.cmc.monggeul.global.config.error.exception.JwtException;
+import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
+import com.cmc.monggeul.global.config.oauth.google.GoogleOAuthService;
+import com.cmc.monggeul.global.config.oauth.google.GoogleOAuthToken;
 import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -23,10 +27,14 @@ import java.util.NoSuchElementException;
 public class UserController {
     // 생성자 주입
     private final KakaoService kakaoService;
+
+    private final GoogleOAuthService googleOAuthService;
     private final UserService userService;
 
+    private final GoogleOAuth googleOAuth;
+
     // == 백엔드 카카오 로그인 테스트 ==
-    @GetMapping("/test/kakao")
+    @GetMapping("/test/kakao/code")
     public String  kakaoCallback(@RequestParam String code) throws BaseException {
 
         return kakaoService.getKaKaoAccessToken(code);
@@ -48,24 +56,49 @@ public class UserController {
 
     // == 백엔드 구글 로그인 테스트 ==
 
+    @GetMapping("/test/google")
+    public void socialLoginRedirect() throws IOException {
+        System.out.println("auth");
+        googleOAuthService.request();
+    }
+
+    @GetMapping("/test/google/code")
+    public ResponseEntity<BaseResponse<GoogleOAuthToken>> callback(@RequestParam(name="code")String code) throws IOException, BaseException, ParseException, ParseException, org.json.simple.parser.ParseException {
+
+        GoogleOAuthToken googleOAuthToken=googleOAuthService.oAuthLogin(code);
+        return ResponseEntity.ok(new BaseResponse<>(googleOAuthToken));
+    }
+
+    @GetMapping("/test/google/access")
+    public ResponseEntity<BaseResponse<GoogleUserDto>> login(@RequestParam(name="accessToken")String accessToken) throws org.json.simple.parser.ParseException {
+
+        return ResponseEntity.ok(new BaseResponse<>(googleOAuth.requestUserInfo(accessToken)));
+
+
+    }
+
 
     // == 백엔드 애플 로그인 테스트 ==
 
 
     // 카카오 로그인
     @PostMapping("/kakao/login")
-    public ResponseEntity<BaseResponse<PostKakaoLoginRes>> postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) {
+    public ResponseEntity<BaseResponse<PostLoginRes>> postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) {
         KakaoUserDto kakaoUserDto=kakaoService.createKakaoUser(postKakaoLoginReq.getKakaoAccessToken());
-        PostKakaoLoginRes postKakaoLoginRes=userService.kakaoLogin(postKakaoLoginReq,kakaoUserDto);
+        PostLoginRes postKakaoLoginRes=userService.kakaoLogin(postKakaoLoginReq,kakaoUserDto);
         return ResponseEntity.ok(new BaseResponse<>(postKakaoLoginRes));
-    }
-//
-    @GetMapping ("/hello")
-    ResponseEntity<BaseResponse<String>>sayHi(){
-        return  ResponseEntity.ok(new BaseResponse<>("Hi"));
     }
 
     // 구글 로그인
+
+    @PostMapping("/google/login")
+    public ResponseEntity<BaseResponse<PostLoginRes>> login(@RequestBody PostGoogleLoginReq postGoogleLoginReq) throws org.json.simple.parser.ParseException {
+
+        GoogleUserDto googleUserDto=googleOAuth.requestUserInfo(postGoogleLoginReq.getGoogleAccessToken());
+        PostLoginRes postLoginRes=userService.googleLogin(postGoogleLoginReq,googleUserDto);
+        return ResponseEntity.ok(new BaseResponse<>(postLoginRes));
+
+    }
 
     //애플 로그인
 

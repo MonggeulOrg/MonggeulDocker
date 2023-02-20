@@ -32,5 +32,15 @@ spring:
     port: 6379
     timeout: 3000 #ms connection timeout
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+
+            client-id: 1078527416021-a3p9mn4i1a0vid1uog9lh4eg51ad1m0h.apps.googleusercontent.com
+            client-secret: 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
+
+
 
 

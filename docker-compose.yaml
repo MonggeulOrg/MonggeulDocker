@@ -1,6 +1,12 @@
 version: '3'
 services:
 
+  redis:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
   web:
     container_name: web
     image: jungminleeee/monggeul-web
@@ -19,10 +25,6 @@ services:
     depends_on:
       - web
 
-  redis:
-    container_name: redis
-    image: redis:alpine
-    ports:
-      - 6379:6379
+
 
 
