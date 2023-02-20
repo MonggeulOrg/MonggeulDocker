@@ -18,6 +18,7 @@ services:
       - 80:80
     depends_on:
       - web
+
   redis:
     container_name: redis
     image: redis:alpine
