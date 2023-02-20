@@ -8,6 +8,12 @@ services:
       - 8080
     ports:
       - 8080:8080
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: "monggeul-log"
+        awslogs-region: "ap-northeast-2"
+        awslogs-stream: "monggeul-backend-log"
 
   nginx:
     container_name: nginx
@@ -16,15 +22,4 @@ services:
       - 80:80
     depends_on:
       - web
-  backend:
-    image: jungminleeee/monggeul-web
-    container_name: server
-    hostname: ec2-user
-    expose:
-      - "5000"
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: "monggeul-log"
-        awslogs-region: "ap-northeast-2"
-        awslogs-stream: "monggeul-backend-log"
+
