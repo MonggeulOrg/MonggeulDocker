@@ -49,7 +49,7 @@ public class User extends BaseEntity implements UserDetails  {
     //[Role]
 
     // 1(유저) : 1(role)  1(role):N(유저)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="roleCode")
     private Role role;
 
