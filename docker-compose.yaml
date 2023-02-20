@@ -8,12 +8,7 @@ services:
       - 8080
     ports:
       - 8080:8080
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: "monggeul-log"
-        awslogs-region: "ap-northeast-2"
-        awslogs-stream: "monggeul-backend-log"
+
 
 
   nginx:
@@ -23,5 +18,10 @@ services:
       - 80:80
     depends_on:
       - web
+  redis:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - 6379:6379
 
 

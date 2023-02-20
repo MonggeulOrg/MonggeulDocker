@@ -7,9 +7,9 @@ spring:
     path match:
       matching-strategy: ant_path_matcher
 
-  config:
-    import:
-      - application-aws.yml
+#  config:
+#    import:
+#      - application-aws.yml
 
 
   jpa:
@@ -23,6 +23,11 @@ spring:
     database: mysql
 
   redis:
+    lettuce:
+      pool:
+        max-active: 5 # pool에 할당될 수 있는 커넥션 최대수
+        max-idle: 5 # pool의 'idle' 커넥션 최대수
+        min-idle: 2
     host: 127.0.0.1
     port: 6379
     timeout: 3000 #ms connection timeout
