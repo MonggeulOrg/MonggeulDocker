@@ -26,7 +26,6 @@ public class UserController {
     private final KakaoService kakaoService;
     private final UserService userService;
 
-
     // == 백엔드 카카오 로그인 테스트 ==
     @GetMapping("/test/kakao")
     public String  kakaoCallback(@RequestParam String code) throws BaseException {
