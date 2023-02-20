@@ -78,5 +78,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_REPO }}/monggeul-web
             sudo docker pull ${{ secrets.DOCKER_REPO }}/monggeul-nginx
             docker-compose up -d
-            docker run -p 8080:8080 monggeul-web
             docker image prune -f
+            docker run -p 8080:8080 monggeul-web
