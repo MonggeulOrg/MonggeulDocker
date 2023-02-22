@@ -79,7 +79,6 @@ public class UserController {
 
     // == 백엔드 애플 로그인 테스트 ==
 
-
     // 카카오 로그인
     @PostMapping("/kakao/login")
     public ResponseEntity<BaseResponse<PostLoginRes>> postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) {
@@ -106,7 +105,5 @@ public class UserController {
 
     // 매칭 완료 -> 상대방 코드 입력 -> 상대방 코드 복호화 -> Matching 테이블에 넣을 것
 
-
-    // 매칭 유효성 검사 (이미 매칭이 되었다면 유료 요금제로 전환하라고 알려줘야함)
 
 }
