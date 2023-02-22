@@ -1,13 +1,16 @@
 package com.cmc.monggeul.domain.user.entity;
 
+import com.cmc.monggeul.domain.diary.entity.Diary;
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
-public class Matching extends BaseEntity {
+public class Family extends BaseEntity {
 
     // 확장 가능성을 고려한 설계
     @Id
@@ -17,11 +20,14 @@ public class Matching extends BaseEntity {
     // 1(유저) : N(매칭 유저)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId")
-    private User user;
+    private User child;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="matchingUserId")
-    private User matchingUser;
+    @JoinColumn(name="parentId")
+    private User parent;
+
+    @OneToMany(mappedBy = "family")
+    private List<Diary> diaryList=new ArrayList<>();
 
 
 

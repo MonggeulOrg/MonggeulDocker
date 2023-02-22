@@ -74,15 +74,13 @@ public class UserService {
             // 유저 role 저장
             Role role=roleRepository.findByRoleCode(postKakaoLoginReq.getRole());
 
-            // 유저 나이 저장
-            User.Age age=Enum.valueOf(User.Age.class, postKakaoLoginReq.getAge());
 
 
             User user=User.builder()
                             .name(postKakaoLoginReq.getUserName())
                             .email(kakaoUserDto.getEmail())
                             .role(role)
-                            .age(age)
+                            .age(postKakaoLoginReq.getAge())
                             .profileImgUrl(kakaoUserDto.getProfileImgUrl())
                             .oAuthType(User.OAuthType.KAKAO)
                             .matchingCode(matchCode)
@@ -133,15 +131,13 @@ public class UserService {
             // 유저 role 저장
             Role role=roleRepository.findByRoleCode(postGoogleLoginReq.getRole());
 
-            // 유저 나이 저장
-            User.Age age=Enum.valueOf(User.Age.class, postGoogleLoginReq.getAge());
 
 
             User user=User.builder()
                     .name(postGoogleLoginReq.getUserName())
                     .email(googleUserDto.getEmail())
                     .role(role)
-                    .age(age)
+                    .age(postGoogleLoginReq.getAge())
                     .profileImgUrl(googleUserDto.getProfileImgUrl())
                     .oAuthType(User.OAuthType.GOOGLE)
                     .matchingCode(matchCode)

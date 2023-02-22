@@ -31,16 +31,16 @@ public class GoogleOAuth {
     //applications.yml 에서 value annotation을 통해서 값을 받아온다.
     private String GOOGLE_SNS_LOGIN_URL="https://accounts.google.com/o/oauth2/v2/auth";
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String GOOGLE_SNS_CLIENT_ID;
 
-    private String GOOGLE_SNS_CALLBACK_URL="http://localhost:8080/login/oauth2/code/google";
+    private String GOOGLE_SNS_CLIENT_SECRET="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";
 
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String GOOGLE_SNS_CLIENT_SECRET;
+    private String GOOGLE_SNS_CLIENT_ID= "1078527416021-r7gbip9cjhnhmm8hpoa636tevboeg77t.apps.googleusercontent.com";
+
     private String GOOGLE_DATA_ACCESS_SCOPE="https://www.googleapis.com/auth/userinfo.email";
 
+    private String GOOGLE_SNS_CALLBACK_URL="http://localhost:8080/accounts/google/login/callback";
 
+    //private String GOOGLE_SNS_CALLBACK_URL="http://localhost:8080/login/oauth2/code/google";
 
 
     public String getOauthRedirectURL(){

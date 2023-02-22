@@ -11,5 +11,5 @@ public class PostKakaoLoginReq {
 
     private String role;
 
-    private String age;
+    private int age;
 }
