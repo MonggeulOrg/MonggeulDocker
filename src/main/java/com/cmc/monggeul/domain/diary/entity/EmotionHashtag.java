@@ -19,7 +19,10 @@ public class EmotionHashtag extends BaseEntity {
 
     private String hashtagImgUrl;
 
-    @OneToMany(mappedBy = "emotionHashtag")
-    private List<Diary> diaryList=new ArrayList<>();
+    @OneToMany(mappedBy = "childEmotionHashtag")
+    private List<Diary> childDiaryList=new ArrayList<>();
+
+    @OneToMany(mappedBy = "parentEmotionHashtag")
+    private List<Diary> parentDiaryList=new ArrayList<>();
 
 }

@@ -2,7 +2,6 @@ package com.cmc.monggeul.domain.user.entity;
 
 import com.cmc.monggeul.domain.alert.entity.Alert;
 import com.cmc.monggeul.domain.community.entity.Article;
-import com.cmc.monggeul.domain.diary.entity.UserDiarySharing;
 import com.cmc.monggeul.domain.diary.entity.UserQuestionMapping;
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -30,8 +29,7 @@ public class User extends BaseEntity implements UserDetails  {
 
     private String profileImgUrl;
 
-    @Enumerated(value = EnumType.STRING)
-    private Age age;
+    private int age;
 
     private String matchingCode;
 
@@ -40,11 +38,11 @@ public class User extends BaseEntity implements UserDetails  {
 
 
     //[Matching]
-    @OneToMany(mappedBy = "user")
-    private List<Matching> users=new ArrayList<>();
+    @OneToMany(mappedBy = "child")
+    private List<Family> children=new ArrayList<>();
 
-    @OneToMany(mappedBy = "matchingUser")
-    private List<Matching> matchingUsers=new ArrayList<>();
+    @OneToMany(mappedBy = "parent")
+    private List<Family> parents=new ArrayList<>();
 
     //[Role]
 
@@ -57,10 +55,7 @@ public class User extends BaseEntity implements UserDetails  {
     @OneToMany(mappedBy = "user")
     private List<UserQuestionMapping> userQuestionMappings=new ArrayList<>();
 
-    //[Diary]
-    // 1(user) : N(sharing)
-    @OneToMany(mappedBy = "user")
-    private List<UserDiarySharing> userDiarySharingList=new ArrayList<>();
+
 
     //[Alert]
     @OneToMany(mappedBy = "user")
@@ -89,18 +84,9 @@ public class User extends BaseEntity implements UserDetails  {
     }
 
 
-    public enum Age{
-
-        TEN,
-        TWENTY,
-        THIRTY,
-        FOURTY,
-        FIFTY,
-        SIXTY
-    }
     @Builder
 
-    public User(String name,String email,String profileImgUrl,Role role,Age age,OAuthType oAuthType,String matchingCode) {
+    public User(String name,String email,String profileImgUrl,Role role,int age,OAuthType oAuthType,String matchingCode) {
         this.name=name;
         this.email=email;
         this.profileImgUrl=profileImgUrl;

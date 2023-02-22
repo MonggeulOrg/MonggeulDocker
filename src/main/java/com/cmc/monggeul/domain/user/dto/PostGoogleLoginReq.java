@@ -12,5 +12,5 @@ public class PostGoogleLoginReq {
 
     private String role;
 
-    private String age;
+    private int age;
 }

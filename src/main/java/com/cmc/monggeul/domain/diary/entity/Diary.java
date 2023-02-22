@@ -1,5 +1,6 @@
 package com.cmc.monggeul.domain.diary.entity;
 
+import com.cmc.monggeul.domain.user.entity.Family;
 import com.cmc.monggeul.domain.user.entity.User;
 import lombok.NoArgsConstructor;
 
@@ -20,21 +21,45 @@ public class Diary {
     private Question question;
 
     @Lob
-    private String text;
+    private String parentText;
     @Lob
-    private String imageURL;
+    private String parentImageURL;
+
+    @Lob
+    private String childText;
+
+    @Lob
+    private  String childImageURL;
+
+    @Enumerated(value = EnumType.STRING)
+    private DiaryStatus parentStatus;
+
+    @Enumerated(value = EnumType.STRING)
+    private DiaryStatus childStatus;
+
+    public enum DiaryStatus{
+        RESPONSE,
+        NO_RESPONSE
+    };
+
+
+
 
 
 
     //  N(diary) : 1(hashtag)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="emotionId")
-    private EmotionHashtag emotionHashtag;
+    @JoinColumn(name="parentEmotionId")
+    private EmotionHashtag childEmotionHashtag;
 
-    // 1(diary) : N(sharing)
-    @OneToMany(mappedBy = "diary")
-    private List<UserDiarySharing> userDiarySharingList=new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="childEmotionId")
+    private EmotionHashtag parentEmotionHashtag;
 
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="familyId")
+    private Family family;
 
 
 
