@@ -3,6 +3,7 @@ package com.cmc.monggeul.domain.user.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cmc.monggeul.domain.user.dto.*;
+import com.cmc.monggeul.domain.user.entity.Family;
 import com.cmc.monggeul.domain.user.entity.Role;
 import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.domain.user.repository.FamilyRepository;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +44,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    //private final FamilyRepository familyRepository;
+    private final FamilyRepository familyRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -172,23 +174,44 @@ public class UserService {
 
     }
 
-//    public PostMatchingRes matching(String matchingUserCode,String userEmail){
-//
-//        Optional<User> user=userRepository.findByEmail(userEmail);
-//        Optional<User> matchingUser=userRepository.findByMatchingCode(matchingUserCode);
-//
-//        if(user.isPresent()&&matchingUser.isPresent()){
-//
-//            if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
-//
-//            }else if()
-//
-//        }else{
-//            throw new BaseException(ErrorCode.USER_NOT_EXIST);
-//        }
-//
-//
-//    }
+    public PostMatchingRes matching(String matchingUserCode,String userEmail){
+
+        Optional<User> user= Optional.ofNullable(userRepository.findByEmail(userEmail).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST)));
+        Optional<User> matchingUser= Optional.ofNullable(userRepository.findByMatchingCode(matchingUserCode).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST)));
+
+        PostMatchingRes postMatchingRes = null;
+        if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
+            Family family=familyRepository.save(Family.builder()
+                    .child(matchingUser.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .parent(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .build());
+
+            Long familyId=family.getId();
+            postMatchingRes= PostMatchingRes.builder()
+                    .familyId(familyId)
+                    .build();
+
+
+
+
+        }else if(user.get().getRole().getRoleCode().equals("SON")||user.get().getRole().getRoleCode().equals("DAUGHTER")){
+            Family family=familyRepository.save(Family.builder()
+                    .child(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .parent(matchingUser.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .build());
+
+            Long familyId=family.getId();
+            postMatchingRes= PostMatchingRes.builder()
+                    .familyId(familyId)
+                    .build();
+
+        }
+        
+        return postMatchingRes;
+
+
+
+    }
 
 
 

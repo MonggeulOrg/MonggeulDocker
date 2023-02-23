@@ -112,17 +112,16 @@ public class UserController {
 
     // 매칭 완료 -> 상대방 코드 입력 -> 상대방 코드 복호화 -> Matching 테이블에 넣을 것
 
-//    @PostMapping("/matching")
-//    public ResponseEntity<BaseResponse<PostMatchingRes>> matching(@RequestBody PostMatchingReq postMatchingReq, HttpServletRequest httpServletRequest){
-//        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
-//        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
-//        PostMatchingRes postMatchingRes=userService.matching(postMatchingReq.getMatchingUserCode(),userEmail);
-//
-//
-//
-//
-//    }
-//
+    @PostMapping("/matching")
+    public ResponseEntity<BaseResponse<PostMatchingRes>> matching(@RequestBody PostMatchingReq postMatchingReq, HttpServletRequest httpServletRequest){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        PostMatchingRes postMatchingRes=userService.matching(postMatchingReq.getMatchingUserCode(),userEmail);
+        return ResponseEntity.ok(new BaseResponse<>(postMatchingRes));
+
+
+    }
+
 
 
 
