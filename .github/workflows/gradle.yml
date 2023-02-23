@@ -77,10 +77,10 @@ jobs:
           username: ec2-user
           key: ${{ secrets.KEY }}
           script: |
-            docker stop monggeul
-            docker rm monggeul
+            sudo docker rm -f $(docker ps -qa)
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/monggeul_docker
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/monggeul_docker
             sudo docker-compose up -d
-            docker rmi -f $(docker images -f "dangling=true" -q)
+            
 
             
