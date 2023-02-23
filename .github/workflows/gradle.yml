@@ -64,8 +64,8 @@ jobs:
       # 8) Docker 빌드 & 푸쉬
       - name: docker build and push
         run: |
-          docker build  -t ${{ secrets.DOCKER_USERNAME }}/monggeul_docker .
-          docker push ${{ secrets.DOCKER_USERNAME }}/monggeul_docker
+          docker build -t ${{ secrets.DOCKER_REPO}}/monggeul_docker .
+          docker push ${{ secrets.DOCKER_REPO }}/monggeul_docker
 
 
 
