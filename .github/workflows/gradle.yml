@@ -64,8 +64,7 @@ jobs:
       # 8) Docker 빌드 & 푸쉬
       - name: docker build and push
         run: |
-          docker build -f Dockerfile -t monggeul .
-          docker tag monggeul/monggeul-docker:latest \ ${{ secrets.DOCKER_USERNAME }}/monggeul-docker:latest
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/monggeul-docker .
           docker push ${{ secrets.DOCKER_USERNAME }}/monggeul-docker
 
 
