@@ -11,12 +11,15 @@ import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuthService;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuthToken;
 import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
+import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
+import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.NoSuchElementException;
@@ -32,6 +35,10 @@ public class UserController {
     private final UserService userService;
 
     private final GoogleOAuth googleOAuth;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtTokenProvider jwtTokenProvider;
+
 
     // == 백엔드 카카오 로그인 테스트 ==
     @GetMapping("/test/kakao/code")
@@ -105,6 +112,17 @@ public class UserController {
 
     // 매칭 완료 -> 상대방 코드 입력 -> 상대방 코드 복호화 -> Matching 테이블에 넣을 것
 
+//    @PostMapping("/matching")
+//    public ResponseEntity<BaseResponse<PostMatchingRes>> matching(@RequestBody PostMatchingReq postMatchingReq, HttpServletRequest httpServletRequest){
+//        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
+//        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+//        PostMatchingRes postMatchingRes=userService.matching(postMatchingReq.getMatchingUserCode(),userEmail);
+//
+//
+//
+//
+//    }
+//
 
 
 

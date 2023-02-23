@@ -5,8 +5,10 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cmc.monggeul.domain.user.dto.*;
 import com.cmc.monggeul.domain.user.entity.Role;
 import com.cmc.monggeul.domain.user.entity.User;
+import com.cmc.monggeul.domain.user.repository.FamilyRepository;
 import com.cmc.monggeul.domain.user.repository.RoleRepository;
 import com.cmc.monggeul.domain.user.repository.UserRepository;
+import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
 import com.cmc.monggeul.global.config.security.SecurityConfig;
@@ -40,6 +42,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    //private final FamilyRepository familyRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -168,6 +171,24 @@ public class UserService {
                 .build();
 
     }
+
+//    public PostMatchingRes matching(String matchingUserCode,String userEmail){
+//
+//        Optional<User> user=userRepository.findByEmail(userEmail);
+//        Optional<User> matchingUser=userRepository.findByMatchingCode(matchingUserCode);
+//
+//        if(user.isPresent()&&matchingUser.isPresent()){
+//
+//            if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
+//
+//            }else if()
+//
+//        }else{
+//            throw new BaseException(ErrorCode.USER_NOT_EXIST);
+//        }
+//
+//
+//    }
 
 
 
