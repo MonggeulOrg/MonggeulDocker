@@ -10,7 +10,7 @@ services:
     restart: always
   spring-boot:
     container_name: monggeul-server
-    image: jungminleeee/monggeul-docker
+    image: jungminleeee/monggeul_docker
     restart: always
     expose:
       - "8080"
