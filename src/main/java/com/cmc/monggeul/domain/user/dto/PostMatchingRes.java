@@ -3,7 +3,7 @@ package com.cmc.monggeul.domain.user.dto;
 import lombok.Data;
 
 @Data
-public class PostMatchingReq {
+public class PostMatchingRes {
 
-    private String matchingUserCode;
+    private Long familyId;
 }

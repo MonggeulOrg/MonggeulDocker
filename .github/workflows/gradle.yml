@@ -80,4 +80,4 @@ jobs:
             docker-compose up -d
             docker image prune -f
             docker stop server
-            docker run -d --rm --name server -p 8080:8080 jungminleeee/monggeul-web
+            docker run -d --name server -p 8080:8080 jungminleeee/monggeul-web
