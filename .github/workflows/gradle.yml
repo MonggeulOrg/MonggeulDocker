@@ -64,8 +64,8 @@ jobs:
       # 8) Docker 빌드 & 푸쉬
       - name: docker build and push
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/monggeul-docker .
-          docker push ${{ secrets.DOCKER_USERNAME }}/monggeul-docker
+          docker build  -t ${{ secrets.DOCKER_USERNAME }}/monggeul_docker .
+          docker push ${{ secrets.DOCKER_USERNAME }}/monggeul_docker
 
 
 
@@ -79,7 +79,7 @@ jobs:
           script: |
             docker stop monggeul
             docker rm monggeul
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/monggeul-docker
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/monggeul_docker
             sudo docker-compose up -d
             docker rmi -f $(docker images -f "dangling=true" -q)
 
