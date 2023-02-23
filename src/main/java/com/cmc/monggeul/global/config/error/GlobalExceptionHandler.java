@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.servlet.http.HttpServletRequest;
 import java.net.BindException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -104,6 +105,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<BaseResponse<?>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         return ResponseEntity.badRequest().body(new BaseResponse<>(ErrorCode.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<BaseResponse<?>>handleNoSuchElementException(NoSuchElementException e){
+        return ResponseEntity.badRequest().body(new BaseResponse<Object>(BAD_REQUEST));
     }
 
     // Application Exception
