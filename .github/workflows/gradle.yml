@@ -61,10 +61,14 @@ jobs:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: web docker build and push
+      # 8) Docker 빌드 & 푸쉬
+      - name: docker build and push
         run: |
-          docker build -t ${{ secrets.DOCKER_REPO }}/monggeul-web .
-          docker push ${{ secrets.DOCKER_REPO }}/monggeul-web
+          docker build -f Dockerfile -t monggeul .
+          docker tag monggeul ${{ secrets.DOCKER_USERNAME }}/monggeul-docker
+          docker push ${{ secrets.DOCKER_USERNAME }}/monggeul-docker
+
+
 
       ## docker compose up
       - name: executing remote ssh commands using password
@@ -74,9 +78,10 @@ jobs:
           username: ec2-user
           key: ${{ secrets.KEY }}
           script: |
-            sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/monggeul-web
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/monggeul-nginx
-            docker-compose up -d
-            docker image prune -f
+            docker stop monggeul
+            docker rm monggeul
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/monggeul-docker
+            sudo docker-compose up -d
+            docker rmi -f $(docker images -f "dangling=true" -q)
+
             
