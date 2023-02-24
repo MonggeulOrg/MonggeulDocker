@@ -77,10 +77,10 @@ jobs:
           username: ec2-user
           key: ${{ secrets.KEY }}
           script: |
-            docker rm -f $(docker ps -qa)
-            docker rmi ${{ secrets.DOCKER_USERNAME }}/monggeul_docker
-            docker pull ${{ secrets.DOCKER_USERNAME }}/monggeul_docker
-            docker-compose up -d
+              sudo docker rm -f $(docker ps -qa)
+              sudo docker pull ${{ secrets.DOCKER_REPO }}/monggeul_docker
+              docker-compose up -d
+              docker image prune -f
             
 
             
