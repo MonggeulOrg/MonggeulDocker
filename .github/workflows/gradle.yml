@@ -52,6 +52,8 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1 # buildx 설정
 
       # 웹 이미지 빌드 및 도커허브에 push
 
@@ -62,12 +64,16 @@ jobs:
             password: ${{ secrets.DOCKER_PASSWORD }}
 
 
+      ## 도커 이미지 빌드,푸쉬
 
-      # 8) Docker 빌드 & 푸쉬
-      - name: docker build and push
-        run: |
-          docker build -t ${{ secrets.DOCKER_REPO}}/monggeul_docker .
-          docker push ${{ secrets.DOCKER_REPO }}/monggeul_docker
+      - uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKER_REPO }}/monggeul_docker:latest
+          cache-from: type=gha,scope=build-main
+          cache-to: type=gha,mode=max,scope=build-main
 
       ## docker compose up
       - name: executing remote ssh commands using password
@@ -78,6 +84,6 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             docker rm -f $(docker ps -qa)
-            docker rmi ${{ secrets.DOCKER_USERNAME }}/monggeul_docker            
-            docker pull ${{ secrets.DOCKER_USERNAME }}/monggeul_docker 
+            docker rmi ${{ secrets.DOCKER_REPO }}/monggeul_docker            
+            docker pull ${{ secrets.DOCKER_REPO }}/monggeul_docker 
             docker-compose up -d
