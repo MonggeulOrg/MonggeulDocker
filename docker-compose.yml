@@ -8,8 +8,8 @@ services:
     networks:
       - db_network
     restart: always
-  spring-boot:
-    container_name: monggeul-server
+  spring:
+    container_name: spring
     image: jungminleeee/monggeul_docker
     restart: always
     expose:
