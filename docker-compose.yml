@@ -4,7 +4,7 @@ services:
     container_name: redis
     image: redis:latest
     ports:
-      - "6379:6379"
+      - 6379:6379
     networks:
       - db_network
     restart: always
@@ -13,9 +13,9 @@ services:
     image: jungminleeee/monggeul_docker
     restart: always
     expose:
-      - "8080"
+      - 8080
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - redis
     networks:
