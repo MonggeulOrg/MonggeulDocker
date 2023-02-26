@@ -129,6 +129,14 @@ public class UserController {
 
 
     }
+    @GetMapping("/matching")
+    public ResponseEntity<BaseResponse<GetUserMatchingCodeRes>> getMatchingCode(HttpServletRequest request){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        GetUserMatchingCodeRes getUserMatchingCodeRes=userService.getMatchingCode(userEmail);
+        return ResponseEntity.ok(new BaseResponse<>(getUserMatchingCodeRes));
+
+    }
 
 
 
