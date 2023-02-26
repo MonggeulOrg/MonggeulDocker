@@ -7,9 +7,9 @@ spring:
     path match:
       matching-strategy: ant_path_matcher
 
-  config:
-    import:
-      - application-aws.yml
+#  config:
+#    import:
+#      - application-aws.yml
 
 
   jpa:

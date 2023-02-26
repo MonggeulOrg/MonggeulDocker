@@ -62,6 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                         pathMatcher.match("/login/oauth2/code/google",path) &&request.getMethod().equals("GET")||
                                         pathMatcher.match("/user/test/google/access",path)&&request.getMethod().equals("GET")||
                                         pathMatcher.match("/user/google/login",path)&&request.getMethod().equals("POST")||
+                                        pathMatcher.match("/user/test/apple/access",path)&&request.getMethod().equals("GET")||
                                         pathMatcher.match("/swagger-ui/**", path) ||
                         pathMatcher.match("/favicon.ico", path) ||
                         pathMatcher.match("/swagger-resources/**", path) ||

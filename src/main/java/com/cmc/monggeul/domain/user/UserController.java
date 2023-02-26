@@ -70,14 +70,14 @@ public class UserController {
     }
 
     @GetMapping("/test/google/code")
-    public ResponseEntity<BaseResponse<GoogleOAuthToken>> callback(@RequestParam(name="code")String code) throws IOException, BaseException, ParseException, ParseException, org.json.simple.parser.ParseException {
+    public ResponseEntity<BaseResponse<GoogleOAuthToken>> googleCallback(@RequestParam(name="code")String code) throws IOException, BaseException, ParseException, ParseException, org.json.simple.parser.ParseException {
 
         GoogleOAuthToken googleOAuthToken=googleOAuthService.oAuthLogin(code);
         return ResponseEntity.ok(new BaseResponse<>(googleOAuthToken));
     }
 
     @GetMapping("/test/google/access")
-    public ResponseEntity<BaseResponse<GoogleUserDto>> login(@RequestParam(name="accessToken")String accessToken) throws org.json.simple.parser.ParseException {
+    public ResponseEntity<BaseResponse<GoogleUserDto>> googleLogin(@RequestParam(name="accessToken")String accessToken) throws org.json.simple.parser.ParseException {
 
         return ResponseEntity.ok(new BaseResponse<>(googleOAuth.requestUserInfo(accessToken)));
 
@@ -85,6 +85,16 @@ public class UserController {
     }
 
     // == 백엔드 애플 로그인 테스트 ==
+
+    String client_id="com.devsell.mongguel";
+    String redirect_uri="https://jmleeex.co.kr/";
+    @GetMapping("/test/apple/access")
+    public ResponseEntity<String>getAppleAuth(){
+        String reqUrl = "https://appleid.apple.com" + "/auth/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri
+                + "&response_type=code id_token&response_mode=form_post";
+
+        return ResponseEntity.ok(reqUrl);
+    }
 
     // 카카오 로그인
     @PostMapping("/kakao/login")
