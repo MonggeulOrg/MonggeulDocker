@@ -17,6 +17,8 @@ public class Category extends BaseEntity {
 
     private String name;
 
+    private String subName;
+
     @OneToMany(mappedBy = "category")
     private List<RoleCategoryMapping> roleCategoryMappings = new ArrayList<>();
 

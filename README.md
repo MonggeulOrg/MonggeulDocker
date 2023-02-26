@@ -1,6 +1,6 @@
 # Monggeul-BE
 
-몽글팀 백엔드 Repository ☁️
+몽글팀 백엔드 Repository ☁️ (도커 배포 버전)
 
 ## Commit Convention
 
