@@ -17,7 +17,7 @@ public class HealthCheckController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/apple/oauth")
+    @GetMapping("/apple/oauth")
     public HttpServletResponse appleOauth(HttpServletResponse httpServletResponse){
         System.out.println(httpServletResponse.toString());
         return httpServletResponse;
