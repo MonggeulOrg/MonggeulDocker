@@ -278,6 +278,26 @@ public class UserService {
 
     }
 
+    public GetUserMatchingCodeRes getMatchingCode(String userEmail){
+        Optional<User> user=userRepository.findByEmail(userEmail);
+        Long familyId=0L;
+        if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
+
+            Family family=familyRepository.findByParent(user);
+            familyId=family.getId();
+        }else{
+            Family family=familyRepository.findByChild(user);
+            familyId=family.getId();
+        }
+
+        String matchingCode=user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getMatchingCode();
+
+        return GetUserMatchingCodeRes.builder()
+                .matchingCode(matchingCode)
+                .familyId(familyId)
+                .build();
+    }
+
 
 
 }
