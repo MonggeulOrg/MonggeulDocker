@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 public class HealthCheckController {
@@ -18,8 +19,8 @@ public class HealthCheckController {
     }
 
     @GetMapping("/apple/oauth")
-    public HttpServletResponse appleOauth(HttpServletResponse httpServletResponse){
+    public void appleOauth(HttpServletResponse httpServletResponse) throws IOException {
         System.out.println(httpServletResponse.toString());
-        return httpServletResponse;
+        httpServletResponse.getWriter();
     }
 }
