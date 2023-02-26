@@ -71,43 +71,21 @@ public class UserController {
     }
 
     @GetMapping("/test/google/code")
-    public ResponseEntity<BaseResponse<GoogleOAuthToken>> googleCallback(@RequestParam(name="code")String code) throws IOException, BaseException, ParseException, ParseException, org.json.simple.parser.ParseException {
+    public ResponseEntity<BaseResponse<GoogleOAuthToken>> testGoogleCallback(@RequestParam(name="code")String code) throws IOException, BaseException, ParseException, ParseException, org.json.simple.parser.ParseException {
 
         GoogleOAuthToken googleOAuthToken=googleOAuthService.oAuthLogin(code);
         return ResponseEntity.ok(new BaseResponse<>(googleOAuthToken));
     }
 
     @GetMapping("/test/google/access")
-    public ResponseEntity<BaseResponse<GoogleUserDto>> googleLogin(@RequestParam(name="accessToken")String accessToken) throws org.json.simple.parser.ParseException {
+    public ResponseEntity<BaseResponse<GoogleUserDto>> testGoogleLogin(@RequestParam(name="accessToken")String accessToken) throws org.json.simple.parser.ParseException {
 
         return ResponseEntity.ok(new BaseResponse<>(googleOAuth.requestUserInfo(accessToken)));
 
 
     }
 
-    // == 백엔드 애플 로그인 테스트 ==
 
-    public static final String TEAM_ID = "3AQ2WDVH35";
-    public static final String REDIRECT_URL = "https://jmleeex.co.kr/apple/oauth";
-    public static final String CLIENT_ID = "com.monggeul.service";
-    public static final String KEY_ID = "XLT64UUBMM";
-
-    public static final String AUTH_URL = "https://appleid.apple.com";
-
-    @GetMapping(value = "/test/apple/access")
-    public void getAppleAuth(HttpServletResponse httpServletResponse) throws IOException {
-
-        String reqUrl =
-                AUTH_URL
-                        + "/auth/authorize?client_id="
-                        + CLIENT_ID
-                        + "&redirect_uri="
-                        + REDIRECT_URL
-                        + "&response_type=code id_token&scope=name email&response_mode=form_post";
-
-        httpServletResponse.sendRedirect(reqUrl);
-        System.out.println(httpServletResponse.toString());
-    }
 
     // 카카오 로그인
     @PostMapping("/kakao/login")
@@ -120,7 +98,7 @@ public class UserController {
     // 구글 로그인
 
     @PostMapping("/google/login")
-    public ResponseEntity<BaseResponse<PostLoginRes>> login(@RequestBody PostGoogleLoginReq postGoogleLoginReq) throws org.json.simple.parser.ParseException {
+    public ResponseEntity<BaseResponse<PostLoginRes>> googleLogin(@RequestBody PostGoogleLoginReq postGoogleLoginReq) throws org.json.simple.parser.ParseException {
 
         GoogleUserDto googleUserDto=googleOAuth.requestUserInfo(postGoogleLoginReq.getGoogleAccessToken());
         PostLoginRes postLoginRes=userService.googleLogin(postGoogleLoginReq,googleUserDto);
@@ -129,6 +107,13 @@ public class UserController {
     }
 
     //애플 로그인
+    @PostMapping("/apple/login")
+    public ResponseEntity<BaseResponse<PostLoginRes>> appleLogin(@RequestBody PostAppleLoginReq postAppleLoginReq){
+
+        PostLoginRes postLoginRes=userService.appleLogin(postAppleLoginReq);
+        return ResponseEntity.ok(new BaseResponse<>(postLoginRes));
+
+    }
 
 
     // 소셜 로그인 이후 유효성 검사만 진행한 다음 약관동의 페이지

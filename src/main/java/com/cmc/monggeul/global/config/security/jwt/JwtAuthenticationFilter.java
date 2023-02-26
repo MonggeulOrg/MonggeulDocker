@@ -54,23 +54,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         request.getMethod();
         AntPathMatcher pathMatcher = new AntPathMatcher();
         return (
-                (pathMatcher.match("/", path) && request.getMethod().equals("GET")) ||
-                        (pathMatcher.match("/apple/oauth", path) && request.getMethod().equals("GET")) ||
-                        (pathMatcher.match("/user/test/apple/access", path) && request.getMethod().equals("POST")) ||
-                (pathMatcher.match("/user/test/kakao/code", path) && request.getMethod().equals("GET")) ||
-                        (pathMatcher.match("/user/kakao/login", path) && request.getMethod().equals("POST")) ||
-                        (pathMatcher.match("/user/test/kakao/login",path) &&request.getMethod().equals("GET")||
-                                (pathMatcher.match("/user/test/google",path) &&request.getMethod().equals("GET")||
-                                        pathMatcher.match("/user/test/google/code",path) &&request.getMethod().equals("GET")||
-                                        pathMatcher.match("/login/oauth2/code/google",path) &&request.getMethod().equals("GET")||
-                                        pathMatcher.match("/user/test/google/access",path)&&request.getMethod().equals("GET")||
-                                        pathMatcher.match("/user/google/login",path)&&request.getMethod().equals("POST")||
-                                        pathMatcher.match("/user/test/apple/access",path)&&request.getMethod().equals("GET")||
-                                        pathMatcher.match("/swagger-ui/**", path) ||
+                        pathMatcher.match("/", path) && request.getMethod().equals("GET") ||
+                        pathMatcher.match("/user/apple/login", path) && request.getMethod().equals("POST") ||
+                        pathMatcher.match("/user/test/apple/access", path) && request.getMethod().equals("POST") ||
+                        pathMatcher.match("/user/test/kakao/code", path) && request.getMethod().equals("GET") ||
+                        pathMatcher.match("/user/kakao/login", path) && request.getMethod().equals("POST") ||
+                        pathMatcher.match("/user/test/kakao/login",path) &&request.getMethod().equals("GET")||
+                        pathMatcher.match("/user/test/google",path) &&request.getMethod().equals("GET")||
+                        pathMatcher.match("/user/test/google/code",path) &&request.getMethod().equals("GET")||
+                        pathMatcher.match("/login/oauth2/code/google",path) &&request.getMethod().equals("GET")||
+                        pathMatcher.match("/user/test/google/access",path)&&request.getMethod().equals("GET")||
+                        pathMatcher.match("/user/google/login",path)&&request.getMethod().equals("POST")||
+                        pathMatcher.match("/user/test/apple/access",path)&&request.getMethod().equals("GET")||
+                        pathMatcher.match("/swagger-ui/**", path) ||
                         pathMatcher.match("/favicon.ico", path) ||
-                        pathMatcher.match("/swagger-resources/**", path) ||
-                        pathMatcher.match("/v3/api-docs", path)
-        )));
+                        pathMatcher.match("/swagger-resources/**", path));
     }
 
 

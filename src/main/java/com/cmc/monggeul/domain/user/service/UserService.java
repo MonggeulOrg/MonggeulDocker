@@ -174,6 +174,71 @@ public class UserService {
 
     }
 
+    public PostLoginRes appleLogin(PostAppleLoginReq postAppleLoginReq) throws BaseException {
+
+        // 신규 가입 유저일경우
+        Optional<User> userFind=userRepository.findByEmail(postAppleLoginReq.getAppleEmail());
+
+
+        if(userFind.isEmpty()){
+
+            String matchCode=generateCertNumber.excuteGenerate();
+
+            while(true){
+                Optional<User>userMatching=userRepository.findByMatchingCode(matchCode);
+                if(userMatching.isPresent()){
+                    matchCode=generateCertNumber.excuteGenerate();
+                }else{
+                    break;
+                }
+
+            }
+
+            // 유저 role 저장
+            Role role=roleRepository.findByRoleCode(postAppleLoginReq.getRole());
+
+
+
+            User userSave=User.builder()
+                    .name(postAppleLoginReq.getUserName())
+                    .email(postAppleLoginReq.getAppleEmail())
+                    .role(role)
+                    .age(postAppleLoginReq.getAge())
+                    .profileImgUrl(postAppleLoginReq.getProfileImgUrl())
+                    .oAuthType(User.OAuthType.APPLE)
+                    .matchingCode(matchCode)
+                    .build();
+
+            userRepository.save(userSave);
+
+        }else if(userFind.get().getOAuthType()!= User.OAuthType.APPLE){
+            throw new BaseException(ErrorCode.EMAIL_ALREADY_EXIST);
+        }
+
+
+
+        Authentication authentication=new UsernamePasswordAuthenticationToken(postAppleLoginReq.getAppleEmail(),null,null);
+        TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+        Optional<User> user=userRepository.findByEmail(postAppleLoginReq.getAppleEmail());
+
+        // redis에 refresh token 저장
+        // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+        // refresh token을 복호화한 후 만료기한을 redis에 저장할 것
+        DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
+        System.out.println(decodedJWT.getToken().toString());
+
+        redisTemplate.opsForValue()
+                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+
+        return PostLoginRes.builder()
+                .grantType(tokenDto.getGrantType())
+                .accessToken(tokenDto.getAccessToken())
+                .refreshToken(tokenDto.getRefreshToken())
+                .code(user.get().getMatchingCode())
+                .build();
+
+    }
+
     public PostMatchingRes matching(String matchingUserCode,String userEmail){
 
         Optional<User> user= Optional.ofNullable(userRepository.findByEmail(userEmail).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST)));

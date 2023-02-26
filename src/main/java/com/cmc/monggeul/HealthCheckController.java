@@ -18,9 +18,5 @@ public class HealthCheckController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/apple/oauth")
-    public void appleOauth(HttpServletResponse httpServletResponse) throws IOException {
-        System.out.println(httpServletResponse.toString());
-        httpServletResponse.getWriter();
-    }
+
 }
