@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.NoSuchElementException;
@@ -88,13 +89,13 @@ public class UserController {
 
     public static final String TEAM_ID = "3AQ2WDVH35";
     public static final String REDIRECT_URL = "https://jmleeex.co.kr/apple/oauth";
-    public static final String CLIENT_ID = "com.devsell.mongguel";
+    public static final String CLIENT_ID = "com.monggeul.service";
     public static final String KEY_ID = "XLT64UUBMM";
 
     public static final String AUTH_URL = "https://appleid.apple.com";
 
-    @RequestMapping(value = "/test/apple/access")
-    public String getAppleAuth(){
+    @GetMapping(value = "/test/apple/access")
+    public void getAppleAuth(HttpServletResponse httpServletResponse) throws IOException {
 
         String reqUrl =
                 AUTH_URL
@@ -104,7 +105,8 @@ public class UserController {
                         + REDIRECT_URL
                         + "&response_type=code id_token&scope=name email&response_mode=form_post";
 
-        return reqUrl;
+        httpServletResponse.sendRedirect(reqUrl);
+        System.out.println(httpServletResponse.toString());
     }
 
     // 카카오 로그인

@@ -4,7 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class HealthCheckController {
@@ -15,7 +18,8 @@ public class HealthCheckController {
     }
 
     @PostMapping("/apple/oauth")
-    public ResponseEntity<HttpStatus> appleOauth(){
-        return new ResponseEntity<>(HttpStatus.OK);
+    public HttpServletResponse appleOauth(HttpServletResponse httpServletResponse){
+        System.out.println(httpServletResponse.toString());
+        return httpServletResponse;
     }
 }
