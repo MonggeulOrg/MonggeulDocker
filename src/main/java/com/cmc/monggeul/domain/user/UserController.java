@@ -86,14 +86,25 @@ public class UserController {
 
     // == 백엔드 애플 로그인 테스트 ==
 
-    String client_id="com.devsell.mongguel";
-    String redirect_uri="https://jmleeex.co.kr/";
-    @GetMapping("/test/apple/access")
-    public ResponseEntity<String>getAppleAuth(){
-        String reqUrl = "https://appleid.apple.com" + "/auth/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri
-                + "&response_type=code id_token&response_mode=form_post";
+    public static final String TEAM_ID = "3AQ2WDVH35";
+    public static final String REDIRECT_URL = "https://jmleeex.co.kr/apple/oauth";
+    public static final String CLIENT_ID = "com.devsell.mongguel";
+    public static final String KEY_ID = "XLT64UUBMM";
 
-        return ResponseEntity.ok(reqUrl);
+    public static final String AUTH_URL = "https://appleid.apple.com";
+
+    @RequestMapping(value = "/test/apple/access")
+    public String getAppleAuth(){
+
+        String reqUrl =
+                AUTH_URL
+                        + "/auth/authorize?client_id="
+                        + CLIENT_ID
+                        + "&redirect_uri="
+                        + REDIRECT_URL
+                        + "&response_type=code id_token&scope=name email&response_mode=form_post";
+
+        return reqUrl;
     }
 
     // 카카오 로그인
