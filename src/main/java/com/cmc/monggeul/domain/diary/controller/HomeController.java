@@ -1,4 +1,4 @@
-package com.cmc.monggeul.domain.diary;
+package com.cmc.monggeul.domain.diary.controller;
 
 import com.cmc.monggeul.domain.diary.dto.GetDateDto;
 import com.cmc.monggeul.domain.diary.service.DiaryService;
