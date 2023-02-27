@@ -1,16 +1,18 @@
 package com.cmc.monggeul.domain.diary.entity;
 
 import com.cmc.monggeul.domain.user.entity.Family;
-import com.cmc.monggeul.domain.user.entity.User;
-import lombok.NoArgsConstructor;
+import com.cmc.monggeul.global.config.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@NoArgsConstructor
-public class Diary {
+@AllArgsConstructor
+@Builder
+@Getter
+public class Diary extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,17 +34,20 @@ public class Diary {
     private  String childImageURL;
 
     @Enumerated(value = EnumType.STRING)
-    private DiaryStatus parentStatus;
+    private DiaryStatus parentStatus=DiaryStatus.NO_RESPONSE;
 
     @Enumerated(value = EnumType.STRING)
-    private DiaryStatus childStatus;
+    private DiaryStatus childStatus=DiaryStatus.NO_RESPONSE;
+
+    public Diary() {
+
+    }
+
 
     public enum DiaryStatus{
         RESPONSE,
         NO_RESPONSE
     };
-
-
 
 
 
@@ -60,6 +65,22 @@ public class Diary {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="familyId")
     private Family family;
+
+    public void updateChildInfo(String childText,String childImageURL,DiaryStatus childStatus,EmotionHashtag childEmotionHashtag){
+        this.childText=childText;
+        this.childImageURL=childImageURL;
+        this.childStatus=childStatus;
+        this.childEmotionHashtag=childEmotionHashtag;
+    }
+
+
+    public void updateParentInfo(String parentText,String parentImageURL,DiaryStatus parentStatus,EmotionHashtag parentEmotionHashtag){
+        this.parentText=parentText;
+        this.parentImageURL=parentImageURL;
+        this.parentStatus=parentStatus;
+        this.parentEmotionHashtag=parentEmotionHashtag;
+    }
+
 
 
 

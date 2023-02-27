@@ -1,11 +1,13 @@
 package com.cmc.monggeul.domain.diary.service;
 
-import com.cmc.monggeul.domain.diary.dto.GetCategoryRes;
-import com.cmc.monggeul.domain.diary.dto.GetDateDto;
-import com.cmc.monggeul.domain.diary.dto.GetQuestionRes;
+import com.cmc.monggeul.domain.diary.dto.*;
 import com.cmc.monggeul.domain.diary.entity.Category;
+import com.cmc.monggeul.domain.diary.entity.Diary;
+import com.cmc.monggeul.domain.diary.entity.EmotionHashtag;
 import com.cmc.monggeul.domain.diary.entity.Question;
 import com.cmc.monggeul.domain.diary.repository.CategoryRepository;
+import com.cmc.monggeul.domain.diary.repository.DiaryRepository;
+import com.cmc.monggeul.domain.diary.repository.EmotionHashtagRepository;
 import com.cmc.monggeul.domain.diary.repository.QuestionRepository;
 import com.cmc.monggeul.domain.user.entity.Family;
 import com.cmc.monggeul.domain.user.entity.User;
@@ -15,6 +17,7 @@ import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DiaryService {
 
 
@@ -35,49 +38,59 @@ public class DiaryService {
     private final FamilyRepository familyRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
+
+    private final EmotionHashtagRepository emotionHashtagRepository;
+
+    private final String MOM="MOM";
+    private final String DAD="DAD";
+    private final String SON="SON";
+
+    private final String DAU="DAUGHTER";
+
+    private final DiaryRepository diaryRepository;
     public List<GetCategoryRes> getCategory(String userEmail, Long familyId){
         Optional<User> user=userRepository.findByEmail(userEmail);
         Optional<Family> family=familyRepository.findById(familyId);
         Optional<User>matchingUser;
         List<Category> categoryList=new ArrayList<>();
         String role=user.get().getRole().getRoleCode();
-        if(role.equals("MOM")){
+        if(role.equals(MOM)){
             matchingUser=userRepository.findById(family.get().getChild().getId());
-            if(matchingUser.get().getRole().getRoleCode().equals("SON")){
+            if(matchingUser.get().getRole().getRoleCode().equals(SON)){
                 categoryList=categoryRepository.findMomSonCategory();
 
-            }else if(matchingUser.get().getRole().getRoleCode().equals("DAUGHTER")){
+            }else if(matchingUser.get().getRole().getRoleCode().equals(DAU)){
                 categoryList=categoryRepository.findMomDauCategory();
 
             }
 
-        }else if(role.equals("DAD")){
+        }else if(role.equals(DAD)){
             matchingUser=userRepository.findById(family.get().getChild().getId());
-            if(matchingUser.get().getRole().getRoleCode().equals("SON")){
+            if(matchingUser.get().getRole().getRoleCode().equals(SON)){
                 categoryList=categoryRepository.findDadSonCategory();
 
-            }else if(matchingUser.get().getRole().getRoleCode().equals("DAUGHTER")){
+            }else if(matchingUser.get().getRole().getRoleCode().equals(DAU)){
                 categoryList=categoryRepository.findDadDauCategory();
 
             }
 
-        }else if(role.equals("SON")){
+        }else if(role.equals(SON)){
             matchingUser=userRepository.findById(family.get().getParent().getId());
-            if(matchingUser.get().getRole().getRoleCode().equals("MOM")){
+            if(matchingUser.get().getRole().getRoleCode().equals(MOM)){
                 categoryList=categoryRepository.findSonMomCategory();
 
-            }else if(matchingUser.get().getRole().getRoleCode().equals("DAD")){
+            }else if(matchingUser.get().getRole().getRoleCode().equals(DAD)){
                 categoryList=categoryRepository.findSonDadCategory();
 
             }
 
 
-        }else if(role.equals("DAUGHTER")){
+        }else if(role.equals(DAU)){
             matchingUser=userRepository.findById(family.get().getParent().getId());
-            if(matchingUser.get().getRole().getRoleCode().equals("MOM")){
+            if(matchingUser.get().getRole().getRoleCode().equals(MOM)){
                 categoryList=categoryRepository.findDauMomCategory();
 
-            }else if(matchingUser.get().getRole().getRoleCode().equals("DAD")){
+            }else if(matchingUser.get().getRole().getRoleCode().equals(DAD)){
                 categoryList=categoryRepository.findDauMomCategory();
 
             }
@@ -105,6 +118,97 @@ public class DiaryService {
         ).collect(Collectors.toList());
 
         return getQuestionRes;
+
+
+    }
+
+
+    public PostDiaryRes createDiary(PostDiaryReq postDiaryReq,String userEmail){
+
+        Optional<User> user=userRepository.findByEmail(userEmail);
+        Optional<Family> family=familyRepository.findById(postDiaryReq.getFamilyId());
+        Optional<Question> question=questionRepository.findById(postDiaryReq.getQuestionId());
+        EmotionHashtag emotionHashtag=emotionHashtagRepository.findByText(postDiaryReq.getEmotionHashtag());
+        Optional<EmotionHashtag> nullEmotion=emotionHashtagRepository.findById(6L);
+        String role=user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode();
+        Diary diary = null;
+        if(role.equals(MOM)||role.equals(DAD)){
+            diary= diaryRepository.save(Diary.builder()
+                    .question(question.orElseThrow(()->new RuntimeException("family가 존재하지 않습니다.")))
+                    .family(family.orElseThrow(()->new RuntimeException("질문이 존재하지 않습니다.")))
+                    .parentStatus(Diary.DiaryStatus.RESPONSE)
+                    .parentText(postDiaryReq.getText())
+                    .parentEmotionHashtag(emotionHashtag)
+                    .parentImageURL(postDiaryReq.getImgUrl())
+                    .childStatus(Diary.DiaryStatus.NO_RESPONSE)
+                    .childText("")
+                    .childImageURL("")
+                    .childEmotionHashtag(nullEmotion.orElseThrow())
+                    .build());
+
+
+        }else if(role.equals(SON)||role.equals(DAU)){
+            diary= diaryRepository.save(Diary.builder()
+                    .question(question.orElseThrow())
+                    .family(family.orElseThrow(()->new RuntimeException("질문이 존재하지 않습니다.")))
+                    .childStatus(Diary.DiaryStatus.RESPONSE)
+                    .childText(postDiaryReq.getText())
+                    .childEmotionHashtag(emotionHashtag)
+                    .childImageURL(postDiaryReq.getImgUrl())
+                    .parentStatus(Diary.DiaryStatus.NO_RESPONSE)
+                    .parentText("")
+                    .parentImageURL("")
+                    .parentEmotionHashtag(nullEmotion.orElseThrow())
+                    .build());
+
+        }
+
+
+
+        PostDiaryRes postDiaryRes=PostDiaryRes.builder()
+                .diaryId(diary.getId())
+                .questionName(question.orElseThrow(()->new RuntimeException("질문이 존재하지 않습니다.")).getName())
+                .categoryName(diary.getQuestion().getCategory().getName())
+                .childDiaryText(diary.getChildText())
+                .childImgUrl(diary.getChildImageURL())
+                .childEmotion(diary.getChildEmotionHashtag().getText())
+                .childImgUrl(diary.getChildImageURL())
+                .parentDiaryText(diary.getParentText())
+                .parentImgUrl(diary.getParentImageURL())
+                .parentEmotion(diary.getParentEmotionHashtag().getText())
+                .build();
+
+        return  postDiaryRes;
+    }
+
+    public PostDiaryRes responseDiary(PostResponseDiaryReq postResponseDiaryReq,String userEmail){
+        Optional<User> user=userRepository.findByEmail(userEmail);
+        EmotionHashtag emotionHashtag=emotionHashtagRepository.findByText(postResponseDiaryReq.getEmotionHashtag());
+        String role=user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode();
+        Optional<Diary> diary=diaryRepository.findById(postResponseDiaryReq.getDiaryId());
+        if(role.equals(MOM)||role.equals(DAD)){
+            diary.get().updateParentInfo(postResponseDiaryReq.getText(), postResponseDiaryReq.getImgUrl(), Diary.DiaryStatus.RESPONSE,emotionHashtag );
+        }else if(role.equals(DAU)||role.equals(SON)){
+            diary.get().updateChildInfo(postResponseDiaryReq.getText(), postResponseDiaryReq.getImgUrl(), Diary.DiaryStatus.RESPONSE,
+                    emotionHashtag);
+        }
+
+
+        PostDiaryRes postDiaryRes=PostDiaryRes.builder()
+                .diaryId(diary.orElseThrow().getId())
+                .questionName(diary.orElseThrow().getQuestion().getName())
+                .categoryName(diary.orElseThrow().getQuestion().getCategory().getName())
+                .childDiaryText(diary.orElseThrow().getChildText())
+                .childImgUrl(diary.orElseThrow().getChildImageURL())
+                .childEmotion(diary.orElseThrow().getChildEmotionHashtag().getText()) // fetch join 할 것
+                .childImgUrl(diary.orElseThrow().getChildImageURL())
+                .parentDiaryText(diary.orElseThrow().getParentText())
+                .parentImgUrl(diary.orElseThrow().getParentImageURL())
+                .parentEmotion(diary.orElseThrow().getParentEmotionHashtag().getText())
+                .build();
+
+        return  postDiaryRes;
+
 
 
     }

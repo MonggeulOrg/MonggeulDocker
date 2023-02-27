@@ -2,6 +2,7 @@ package com.cmc.monggeul.domain.diary.entity;
 
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class EmotionHashtag extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
