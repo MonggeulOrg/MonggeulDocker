@@ -1,12 +1,14 @@
 package com.cmc.monggeul.domain.diary.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
-public class PostParentDiaryReq {
+public class PostResponseDiaryReq {
 
+    private Long diaryId;
     private Long familyId;
-    private Long questionId;
     private String text;
     private String imgUrl;
 

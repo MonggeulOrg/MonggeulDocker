@@ -1,7 +1,6 @@
 package com.cmc.monggeul.domain.diary.controller;
 
-import com.cmc.monggeul.domain.diary.dto.GetCategoryRes;
-import com.cmc.monggeul.domain.diary.dto.GetQuestionRes;
+import com.cmc.monggeul.domain.diary.dto.*;
 import com.cmc.monggeul.domain.diary.service.DiaryService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
@@ -44,14 +43,26 @@ public class DiaryController{
     }
 
 
-    // [기록하기]
+    // [기록하기] 공유일기를 시작하는 경우
+    @PostMapping("/create")
+    public ResponseEntity<BaseResponse<PostDiaryRes>>createDiary(@RequestBody PostDiaryReq postDiaryReq,HttpServletRequest request){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        PostDiaryRes postDiaryRes=diaryService.createDiary(postDiaryReq,userEmail);
+        return ResponseEntity.ok(new BaseResponse<>(postDiaryRes));
 
-//    @PostMapping("/")
-//    public ResponseEntity<BaseResponse<PostDiaryRes>>postDiary(@RequestBody PostDiaryReq postDiaryReq){
-//
-//    }
+    }
+
+    // [기록하기] 공유일기에 응답하는 경우
+    @PostMapping("/response")
+    public ResponseEntity<BaseResponse<PostDiaryRes>>postResponseDiary(@RequestBody PostResponseDiaryReq postResponseDiaryReq,HttpServletRequest request){
+
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        PostDiaryRes postDiaryRes=diaryService.responseDiary(postResponseDiaryReq,userEmail);
+        return ResponseEntity.ok(new BaseResponse<>(postDiaryRes));
+    }
 
 
-    // [기록하기] 이미지 업로드
 
 }

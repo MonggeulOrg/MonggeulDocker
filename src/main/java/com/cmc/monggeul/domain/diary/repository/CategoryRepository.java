@@ -1,9 +1,11 @@
 package com.cmc.monggeul.domain.diary.repository;
 
 import com.cmc.monggeul.domain.diary.entity.Category;
+import com.cmc.monggeul.domain.diary.entity.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,4 +47,6 @@ public interface CategoryRepository extends JpaRepository<Category,String> {
     @Query(value = "select * from Category as c where (c.code like 'DAD_SON') or (c.code like 'YOUNG')" +
             "or (c.code like 'REMEMBER') or (c.code like 'THINK')",nativeQuery = true)
     List<Category> findSonDadCategory();
+
+
 }
