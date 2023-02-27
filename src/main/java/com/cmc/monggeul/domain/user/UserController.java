@@ -129,6 +129,8 @@ public class UserController {
 
 
     }
+
+    // 매칭코드,familyId 조회
     @GetMapping("/matching")
     public ResponseEntity<BaseResponse<GetUserMatchingCodeRes>> getMatchingCode(HttpServletRequest request){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);

@@ -1,6 +1,7 @@
 package com.cmc.monggeul.domain.diary.entity;
 
 import com.cmc.monggeul.global.config.BaseEntity;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Category extends BaseEntity {
     @Id
     private String code;
