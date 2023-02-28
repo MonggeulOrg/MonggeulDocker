@@ -32,6 +32,10 @@ public enum ErrorCode {
 
     USER_NOT_EXIST(HttpStatus.NOT_FOUND,404,"존재하지 않는 유저입니다."),
 
+    // Diary
+
+    DIARY_NOT_EXIST(HttpStatus.NOT_FOUND,404,"존재하지 않는 일기입니다."),
+
     // GENERAL
     INVALID_HTTP_METHOD(METHOD_NOT_ALLOWED, 405, "잘못된 Http Method 요청입니다."),
     INVALID_VALUE(HttpStatus.BAD_REQUEST, 400, "잘못된 입력값입니다."),

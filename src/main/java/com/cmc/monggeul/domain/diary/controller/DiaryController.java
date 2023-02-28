@@ -69,6 +69,22 @@ public class DiaryController{
         return ResponseEntity.ok(new BaseResponse<>(postDiaryRes));
     }
 
+    // [홈,기록하기] 일기 상세조회
+
+    @GetMapping("/{diaryId}")
+    public ResponseEntity<BaseResponse<GetDiaryDetailRes>>getDiaryDetail(@PathVariable("diaryId")Long diaryId){
+
+        GetDiaryDetailRes getDiaryDetailRes=diaryService.getDiaryDetail(diaryId);
+        return ResponseEntity.ok(new BaseResponse<>(getDiaryDetailRes));
+    }
+
+    // [기록하기] 추억 확인하기
+    @GetMapping("/question/family/{familyId}")
+    public ResponseEntity<BaseResponse<List<GetConfirmQuestionRes>>> getConfirmQuestion(@PathVariable("familyId")Long familyId){
+        List<GetConfirmQuestionRes> getConfirmQuestionResList=diaryService.getConfirmQuestion(familyId);
+        return ResponseEntity.ok(new BaseResponse<>(getConfirmQuestionResList));
+    }
+
 
 
 

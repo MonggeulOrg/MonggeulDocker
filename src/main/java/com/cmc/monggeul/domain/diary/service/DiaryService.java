@@ -170,7 +170,6 @@ public class DiaryService {
                 .questionName(question.orElseThrow(()->new RuntimeException("질문이 존재하지 않습니다.")).getName())
                 .categoryName(diary.getQuestion().getCategory().getName())
                 .childDiaryText(diary.getChildText())
-                .childImgUrl(diary.getChildImageURL())
                 .childEmotion(diary.getChildEmotionHashtag().getText())
                 .childImgUrl(diary.getChildImageURL())
                 .parentDiaryText(diary.getParentText())
@@ -210,6 +209,37 @@ public class DiaryService {
         return  postDiaryRes;
 
 
+
+    }
+
+    public GetDiaryDetailRes getDiaryDetail(Long diaryId){
+
+        Optional<Diary> diary=diaryRepository.findById(diaryId);
+
+        GetDiaryDetailRes getDiaryDetailRes=GetDiaryDetailRes.builder()
+                .questionName(diary.orElseThrow().getQuestion().getName())
+                .categoryName(diary.orElseThrow().getQuestion().getCategory().getName())
+                .childDiaryText(diary.orElseThrow().getChildText())
+                .childEmotion(diary.orElseThrow().getChildEmotionHashtag().getText()) // fetch join 할 것
+                .parentDiaryText(diary.orElseThrow().getParentText())
+                .parentEmotion(diary.orElseThrow().getParentEmotionHashtag().getText())
+                .build();
+
+        return  getDiaryDetailRes;
+
+    }
+    public List<GetConfirmQuestionRes> getConfirmQuestion(Long familyId){
+        List<Optional<Diary>>diaryList=diaryRepository.findRecentQandA(familyId);
+        List<GetConfirmQuestionRes>confirmQuestionRes=diaryList.stream().map(
+                diary -> GetConfirmQuestionRes.builder()
+                        .questionName(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)).getQuestion().getName())
+                        .categoryName(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)).getQuestion().getCategory().getName())
+                        .parentStatus(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)).getParentStatus())
+                        .childStatus(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)).getChildStatus())
+                        .createdAt(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)).getCreatedAt()).build()
+        ).collect(Collectors.toList());
+
+        return confirmQuestionRes;
 
     }
 
