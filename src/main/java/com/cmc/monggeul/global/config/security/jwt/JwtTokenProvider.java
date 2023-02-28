@@ -17,7 +17,7 @@ public class JwtTokenProvider {
     private long tokenValidTime = 30 * 60 * 1000L;
 
     // 토큰 유효시간
-    private static final int JWT_EXPIRATION_MS = 604800000;
+    private static final int JWT_EXPIRATION_MS = 1000 * 60 * 60 * 24*14;
 
     // jwt 토큰 생성
     public static TokenDto generateToken(Authentication authentication) {
@@ -28,7 +28,7 @@ public class JwtTokenProvider {
         String accessToken=Jwts.builder()
                 .setSubject((String) authentication.getPrincipal()) // 사용자
                 .setIssuedAt(new Date()) // 현재 시간 기반으로 생성
-                .setExpiration(new Date(now.getTime()+30 * 60 * 1000L)) // 만료 시간 세팅
+                .setExpiration(new Date(now.getTime()+1000 * 60 * 60 * 24)) // 만료 시간 세팅 (1일)
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET) // 사용할 암호화 알고리즘, signature에 들어갈 secret 값 세팅
                 .compact();
 
