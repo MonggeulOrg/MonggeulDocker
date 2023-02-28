@@ -1,6 +1,10 @@
 package com.cmc.monggeul.domain.diary.controller;
 
 import com.cmc.monggeul.domain.diary.dto.*;
+import com.cmc.monggeul.domain.diary.entity.Category;
+import com.cmc.monggeul.domain.diary.entity.Question;
+import com.cmc.monggeul.domain.diary.repository.DiaryRepository;
+import com.cmc.monggeul.domain.diary.repository.QuestionRepository;
 import com.cmc.monggeul.domain.diary.service.DiaryService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
@@ -20,6 +24,8 @@ public class DiaryController{
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtTokenProvider jwtTokenProvider;
     private final DiaryService diaryService;
+
+
 
     // [기록하기] 유저별 카테고리 조회
     // 이메일을을 통해 유저정보를 받아온다 => 유저의 role을 가져온다.
@@ -62,6 +68,8 @@ public class DiaryController{
         PostDiaryRes postDiaryRes=diaryService.responseDiary(postResponseDiaryReq,userEmail);
         return ResponseEntity.ok(new BaseResponse<>(postDiaryRes));
     }
+
+
 
 
 

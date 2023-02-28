@@ -17,4 +17,7 @@ public interface QuestionRepository extends JpaRepository<Question,Long> {
 
     Optional<Question> findById(Long id);
 
+    @Query("select q from Question  q join fetch q.category c where q.id=:questionId")
+    Question findCategoryNameWithQuestion(Long questionId);
+
 }
