@@ -1,5 +1,6 @@
 package com.cmc.monggeul.domain.user.entity;
 
+import com.cmc.monggeul.domain.alert.entity.Alert;
 import com.cmc.monggeul.domain.diary.entity.Diary;
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.Builder;
@@ -31,6 +32,9 @@ public class Family extends BaseEntity {
 
     @OneToMany(mappedBy = "family")
     private List<Diary> diaryList=new ArrayList<>();
+
+    @OneToMany(mappedBy = "family")
+    private List<Alert> alertList=new ArrayList<>();
 
     @Builder
     public Family(User child,User parent){
