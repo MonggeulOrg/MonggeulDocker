@@ -1,5 +1,6 @@
 package com.cmc.monggeul.domain.diary.entity;
 
+import com.cmc.monggeul.domain.alert.entity.Alert;
 import com.cmc.monggeul.domain.user.entity.Family;
 import com.cmc.monggeul.global.config.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -65,6 +68,11 @@ public class Diary extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="familyId")
     private Family family;
+
+
+    //Alert
+    @OneToMany(mappedBy = "diary")
+    private List<Alert> alertList=new ArrayList<>();
 
     public void updateChildInfo(String childText,String childImageURL,DiaryStatus childStatus,EmotionHashtag childEmotionHashtag){
         this.childText=childText;

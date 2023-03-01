@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +28,10 @@ public interface DiaryRepository extends JpaRepository<Diary,Long> {
     @Query("select d from Diary  d where d.family.id=:familyId order by d.createdAt desc")
     List<Optional<Diary>>findRecentQandA(Long familyId);
 
+    @Query(value = "select * from Diary as d  join Family as f on f.id=d.familyId  where f.parentId=:parentId and d.parentStatus='NO_RESPONSE' and TIMESTAMPDIFF(DAY,d.createdAt,CURRENT_DATE())>=5 ",nativeQuery = true)
+    List<Diary>parentNotResponseMoreThanFive(@Param("parentId")Long parentId);
+
+    @Query(value = "select * from Diary as  d join Family as f on f.id=d.familyId where f.userId=:childId and d.childStatus='NO_RESPONSE' and TIMESTAMPDIFF(DAY,d.createdAt,CURRENT_DATE())>=5",nativeQuery = true)
+    List<Diary>childNotResponseMoreThanFive(@Param("childId")Long childId);
 
 }

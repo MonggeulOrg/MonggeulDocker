@@ -1,5 +1,7 @@
 package com.cmc.monggeul.domain.diary.service;
 
+import com.cmc.monggeul.domain.alert.entity.Alert;
+import com.cmc.monggeul.domain.alert.repository.AlertRepository;
 import com.cmc.monggeul.domain.diary.dto.*;
 import com.cmc.monggeul.domain.diary.entity.Category;
 import com.cmc.monggeul.domain.diary.entity.Diary;
@@ -48,6 +50,7 @@ public class DiaryService {
     private final String DAU="DAUGHTER";
 
     private final DiaryRepository diaryRepository;
+    private final AlertRepository alertRepository;
     public List<GetCategoryRes> getCategory(String userEmail, Long familyId){
         Optional<User> user=userRepository.findByEmail(userEmail);
         Optional<Family> family=familyRepository.findById(familyId);
@@ -145,6 +148,16 @@ public class DiaryService {
                     .childImageURL("")
                     .childEmotionHashtag(nullEmotion.orElseThrow())
                     .build());
+            // [알람] 자식 유저에게 새 글 작성 알람이 가게끔
+            User child=family.get().getChild();
+            alertRepository.save(Alert.builder()
+                    .sender(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .user(child)
+                    .family(family.orElseThrow(()->new RuntimeException("존재하지 않는 family입니다.")))
+                    .isRead(0)
+                    .messageType(Alert.MessageType.NEW_POST)
+                    .diary(diary)
+                    .build());
 
 
         }else if(role.equals(SON)||role.equals(DAU)){
@@ -159,6 +172,16 @@ public class DiaryService {
                     .parentText("")
                     .parentImageURL("")
                     .parentEmotionHashtag(nullEmotion.orElseThrow())
+                    .build());
+            // [알람] 부모 유저에게 새 글 작성 알람이 가게끔
+            User parent=family.get().getParent();
+            alertRepository.save(Alert.builder()
+                    .sender(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .user(parent)
+                    .family(family.orElseThrow(()->new RuntimeException("존재하지 않는 family입니다.")))
+                    .isRead(0)
+                    .messageType(Alert.MessageType.NEW_POST)
+                    .diary(diary)
                     .build());
 
         }
@@ -182,14 +205,38 @@ public class DiaryService {
 
     public PostDiaryRes responseDiary(PostResponseDiaryReq postResponseDiaryReq,String userEmail){
         Optional<User> user=userRepository.findByEmail(userEmail);
+        Optional<Family>family=familyRepository.findById(postResponseDiaryReq.getFamilyId());
         EmotionHashtag emotionHashtag=emotionHashtagRepository.findByText(postResponseDiaryReq.getEmotionHashtag());
         String role=user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode();
         Optional<Diary> diary=diaryRepository.findById(postResponseDiaryReq.getDiaryId());
         if(role.equals(MOM)||role.equals(DAD)){
             diary.get().updateParentInfo(postResponseDiaryReq.getText(), postResponseDiaryReq.getImgUrl(), Diary.DiaryStatus.RESPONSE,emotionHashtag );
+            // [알람] 자식 유저에게 글 완성 알람이 가게끔
+            User child=family.get().getChild();
+            Alert alert=alertRepository.save(Alert.builder()
+                    .sender(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .user(child)
+                    .family(family.orElseThrow(()->new RuntimeException("존재하지 않는 family입니다")))
+                    .isRead(0)
+                    .messageType(Alert.MessageType.COMPLETE)
+                    .diary(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)))
+                    .build());
+            System.out.println(alert.getId());
+
         }else if(role.equals(DAU)||role.equals(SON)){
             diary.get().updateChildInfo(postResponseDiaryReq.getText(), postResponseDiaryReq.getImgUrl(), Diary.DiaryStatus.RESPONSE,
                     emotionHashtag);
+
+            // [알람] 부모 유저에게 글 완성 알람이 가게끔
+            User parent=family.get().getParent();
+            alertRepository.save(Alert.builder()
+                    .sender(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .user(parent)
+                    .family(family.orElseThrow(()->new RuntimeException("존재하지 않는 family입니다")))
+                    .isRead(0)
+                    .messageType(Alert.MessageType.COMPLETE)
+                    .diary(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)))
+                    .build());
         }
 
 
