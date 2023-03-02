@@ -253,6 +253,7 @@ public class UserService {
 
             Long familyId=family.getId();
             postMatchingRes= PostMatchingRes.builder()
+                    .matchingUserName(family.getChild().getName())
                     .familyId(familyId)
                     .build();
 
@@ -267,6 +268,7 @@ public class UserService {
 
             Long familyId=family.getId();
             postMatchingRes= PostMatchingRes.builder()
+                    .matchingUserName(family.getParent().getName())
                     .familyId(familyId)
                     .build();
 
@@ -296,6 +298,15 @@ public class UserService {
                 .matchingCode(matchingCode)
                 .familyId(familyId)
                 .build();
+    }
+
+    public GetUserInfoByMatchingCodeRes getUserInfoByMatchingCode(String matchingCode){
+        Optional<User>user=userRepository.findByMatchingCode(matchingCode);
+        return GetUserInfoByMatchingCodeRes.builder()
+                .name(user.get().getName())
+                .email(user.get().getEmail())
+                .build();
+
     }
 
 

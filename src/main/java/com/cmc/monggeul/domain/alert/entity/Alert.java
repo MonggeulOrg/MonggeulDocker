@@ -15,6 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Getter
+@Table(name="Alert",indexes = @Index(name="i_createdAt",columnList = "createdAt"))
 public class Alert extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
