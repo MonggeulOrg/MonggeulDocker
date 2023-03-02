@@ -140,6 +140,16 @@ public class UserController {
 
     }
 
+    //매칭코드에 대한 유저정보 조회
+    @GetMapping("/matching/{matchingCode}")
+    public ResponseEntity<BaseResponse<GetUserInfoByMatchingCodeRes>>getUserInfoByMatchingCode(@PathVariable("matchingCode")String matchingCode){
+
+
+        GetUserInfoByMatchingCodeRes getUserInfoByMatchingCodeRes=userService.getUserInfoByMatchingCode(matchingCode);
+        return ResponseEntity.ok(new BaseResponse<>(getUserInfoByMatchingCodeRes));
+
+    }
+
 
 
 }

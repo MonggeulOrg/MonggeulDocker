@@ -24,6 +24,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class S3Service {
 
     private final AmazonS3Client amazonS3Client;

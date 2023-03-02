@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PostMatchingRes {
+public class GetUserInfoByMatchingCodeRes {
 
-    private String matchingUserName;
-    private Long familyId;
+    private String name;
+    private String email;
+
 }

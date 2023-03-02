@@ -11,6 +11,7 @@ import com.cmc.monggeul.domain.diary.repository.CategoryRepository;
 import com.cmc.monggeul.domain.diary.repository.DiaryRepository;
 import com.cmc.monggeul.domain.diary.repository.EmotionHashtagRepository;
 import com.cmc.monggeul.domain.diary.repository.QuestionRepository;
+import com.cmc.monggeul.domain.user.dto.GetUserInfoByMatchingCodeRes;
 import com.cmc.monggeul.domain.user.entity.Family;
 import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.domain.user.repository.FamilyRepository;
@@ -289,6 +290,5 @@ public class DiaryService {
         return confirmQuestionRes;
 
     }
-
 
 }
