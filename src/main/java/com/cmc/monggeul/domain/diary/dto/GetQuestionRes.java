@@ -10,4 +10,8 @@ public class GetQuestionRes {
     private Long questionId;
     private String questionName;
 
+    private String categoryName;
+
+    private String subCategoryName;
+
 }

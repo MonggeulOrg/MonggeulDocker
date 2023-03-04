@@ -116,6 +116,8 @@ public class DiaryService {
         List<Question>questionList=questionRepository.findByCategory(category);
         List<GetQuestionRes> getQuestionRes=questionList.stream().map(
                 question -> GetQuestionRes.builder()
+                        .categoryName(category.getName())
+                        .subCategoryName(category.getSubName())
                         .questionId(question.getId())
                         .questionName(question.getName())
                         .build()
