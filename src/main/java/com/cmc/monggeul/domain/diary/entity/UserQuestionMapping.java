@@ -26,14 +26,6 @@ public class UserQuestionMapping extends BaseEntity {
     @JoinColumn(name="questionId")
     private Question question;
 
-    // 공통 질문 여부
-    @Enumerated(value = EnumType.STRING)
-    private QuestionStatus commonStatus;
-
-
-    // 유저가 만든 질문인지
-    @Enumerated(value = EnumType.STRING)
-    private QuestionStatus customStatus;
 
     // 답변 질문인지
     @Enumerated(value = EnumType.STRING)

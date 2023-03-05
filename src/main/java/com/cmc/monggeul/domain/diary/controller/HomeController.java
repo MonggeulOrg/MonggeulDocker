@@ -33,8 +33,10 @@ public class HomeController {
 
     // [홈] 디데이 계산기
     @GetMapping("/day/{familyId}")
-    public ResponseEntity<BaseResponse<GetDateDto>> getDday(@PathVariable("familyId")Long familyId){
-        GetDateDto getDateDto= homeService.getDday(familyId);
+    public ResponseEntity<BaseResponse<GetDateDto>> getDday(@PathVariable("familyId")Long familyId,HttpServletRequest httpServletRequest){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        GetDateDto getDateDto= homeService.getDday(familyId,userEmail);
 
         return ResponseEntity.ok(new BaseResponse<>(getDateDto));
 

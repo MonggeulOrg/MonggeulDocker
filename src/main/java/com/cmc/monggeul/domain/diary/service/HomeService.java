@@ -39,7 +39,8 @@ public class HomeService {
 
     private final String DAU="DAUGHTER";
 
-    public GetDateDto getDday(Long familyId){
+    public GetDateDto getDday(Long familyId,String userEmail){
+        Optional<User>user=userRepository.findByEmail(userEmail);
         Optional<Family> family=familyRepository.findById(familyId);
         LocalDateTime startDateTime=family.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getCreatedAt();
         LocalDateTime endDateTime=LocalDateTime.now();
@@ -47,6 +48,8 @@ public class HomeService {
 
 
         return GetDateDto.builder()
+                .role(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode())
+                .profileImg(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getProfileImgUrl())
                 .days(days)
                 .build();
     }
