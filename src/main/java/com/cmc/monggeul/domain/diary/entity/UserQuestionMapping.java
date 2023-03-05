@@ -2,6 +2,8 @@ package com.cmc.monggeul.domain.diary.entity;
 
 import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.global.config.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserQuestionMapping extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +34,12 @@ public class UserQuestionMapping extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private QuestionStatus answerStatus;
 
+    public UserQuestionMapping() {
 
-    enum QuestionStatus{
+    }
+
+
+    public enum QuestionStatus{
         YES,
         NO
     }
