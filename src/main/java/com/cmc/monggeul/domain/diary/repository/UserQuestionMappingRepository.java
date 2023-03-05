@@ -9,5 +9,9 @@ import java.util.List;
 
 public interface UserQuestionMappingRepository extends JpaRepository<UserQuestionMapping,Long> {
 
+    @Query("select uq from UserQuestionMapping uq where uq.question.id=:questionId and uq.user.id=:userId")
+
+    UserQuestionMapping findQuestionAndUser(Long questionId,Long userId);
+
 
 }

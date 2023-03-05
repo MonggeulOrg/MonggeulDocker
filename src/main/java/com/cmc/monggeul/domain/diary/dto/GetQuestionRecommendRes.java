@@ -13,4 +13,6 @@ public class GetQuestionRecommendRes {
 
     private Long familyId;
 
+    private String categoryName;
+
 }
