@@ -9,5 +9,8 @@ public class GetDateDto {
 
     private int days;
     private String role;
+    private String matchingUserRole;
     private String profileImg;
+
+    private String matchingUserProfileImg;
 }

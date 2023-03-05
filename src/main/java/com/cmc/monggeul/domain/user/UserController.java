@@ -122,6 +122,7 @@ public class UserController {
 
     @PostMapping("/matching")
     public ResponseEntity<BaseResponse<PostMatchingRes>> matching(@RequestBody PostMatchingReq postMatchingReq, HttpServletRequest httpServletRequest){
+        System.out.println("******");
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
         String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
         PostMatchingRes postMatchingRes=userService.matching(postMatchingReq.getMatchingUserCode(),userEmail);

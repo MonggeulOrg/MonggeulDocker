@@ -11,4 +11,6 @@ public class GetQuestionRecommendRes {
     private Long questionId;
     private String questionName;
 
+    private Long familyId;
+
 }
