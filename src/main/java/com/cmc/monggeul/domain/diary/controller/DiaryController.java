@@ -85,6 +85,12 @@ public class DiaryController{
         return ResponseEntity.ok(new BaseResponse<>(getConfirmQuestionResList));
     }
 
+    // [기록하기] 질문 추천 api
+//    @GetMapping("/question/recommend")
+//    public ResponseEntity<BaseResponse<List<GetQuestionRecommendRes>>>getRecommendQuestion(){
+//
+//    }
+
 
 
 

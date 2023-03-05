@@ -8,4 +8,6 @@ import lombok.Data;
 public class GetDateDto {
 
     private int days;
+    private String role;
+    private String profileImg;
 }
