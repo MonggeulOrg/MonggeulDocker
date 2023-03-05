@@ -44,6 +44,10 @@ public class UserQuestionMapping extends BaseEntity {
         NO
     }
 
+    public void updateStatus(){
+        this.answerStatus=QuestionStatus.YES;
+    }
+
 
 
 

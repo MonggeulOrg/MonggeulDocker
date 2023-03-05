@@ -147,6 +147,22 @@ public class DiaryService {
                     .childEmotionHashtag(nullEmotion.orElseThrow())
                     .build());
 
+            // userQuestionMapping에 로그가 남게끔
+            // 유저 (부모)
+            UserQuestionMapping userQuestionMapping=UserQuestionMapping.builder()
+                    .user(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .answerStatus(UserQuestionMapping.QuestionStatus.YES)
+                    .question(question.orElseThrow(()->new BaseException(ErrorCode.QUESTION_NOT_EXIST)))
+                    .build();
+            userQuestionMappingRepository.save(userQuestionMapping);
+            // 매칭 유저 (자녀)
+            UserQuestionMapping matchingUserQuestionMapping=UserQuestionMapping.builder()
+                    .user(family.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getChild())
+                .answerStatus(UserQuestionMapping.QuestionStatus.NO)
+                    .question(question.orElseThrow(()->new BaseException(ErrorCode.QUESTION_NOT_EXIST)))
+                    .build();
+            userQuestionMappingRepository.save(matchingUserQuestionMapping);
+
 
             // [알람] 자식 유저에게 새 글 작성 알람이 가게끔
             User child=family.get().getChild();
@@ -173,6 +189,22 @@ public class DiaryService {
                     .parentImageURL("")
                     .parentEmotionHashtag(nullEmotion.orElseThrow())
                     .build());
+
+            // userQuestionMapping에 로그가 남게끔
+            // 유저 (자녀)
+            UserQuestionMapping userQuestionMapping=UserQuestionMapping.builder()
+                    .user(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                    .answerStatus(UserQuestionMapping.QuestionStatus.YES)
+                    .question(question.orElseThrow(()->new BaseException(ErrorCode.QUESTION_NOT_EXIST)))
+                    .build();
+            userQuestionMappingRepository.save(userQuestionMapping);
+            // 매칭 유저 (부모)
+            UserQuestionMapping matchingUserQuestionMapping=UserQuestionMapping.builder()
+                    .user(family.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getParent())
+                    .answerStatus(UserQuestionMapping.QuestionStatus.NO)
+                    .question(question.orElseThrow(()->new BaseException(ErrorCode.QUESTION_NOT_EXIST)))
+                    .build();
+            userQuestionMappingRepository.save(matchingUserQuestionMapping);
             // [알람] 부모 유저에게 새 글 작성 알람이 가게끔
             User parent=family.get().getParent();
             alertRepository.save(Alert.builder()
@@ -186,12 +218,7 @@ public class DiaryService {
 
         }
 
-        // userQuestionMapping에 로그가 남게끔
-        UserQuestionMapping userQuestionMapping=UserQuestionMapping.builder()
-                .user(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
-                .question(question.orElseThrow(()->new BaseException(ErrorCode.QUESTION_NOT_EXIST)))
-                .build();
-        userQuestionMappingRepository.save(userQuestionMapping);
+
 
 
         PostDiaryRes postDiaryRes=PostDiaryRes.builder()
@@ -245,14 +272,11 @@ public class DiaryService {
                     .diary(diary.orElseThrow(()->new BaseException(ErrorCode.DIARY_NOT_EXIST)))
                     .build());
         }
-        // userQuestionMapping에 로그가 남게끔
-        UserQuestionMapping userQuestionMapping=UserQuestionMapping.builder()
-                .user(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
-                .question(question)
-                .answerStatus(UserQuestionMapping.QuestionStatus.YES)
-                .build();
-        userQuestionMappingRepository.save(userQuestionMapping);
+        // userQuestionMapping answerStatus 바꾸기
 
+        UserQuestionMapping userQuestionMapping=userQuestionMappingRepository.findQuestionAndUser(question.getId(),user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getId());
+
+        userQuestionMapping.updateStatus();
 
         PostDiaryRes postDiaryRes=PostDiaryRes.builder()
                 .diaryId(diary.orElseThrow().getId())
@@ -362,7 +386,6 @@ public class DiaryService {
         }else if(role.equals(DAU)){
             Family family=familyRepository.findByChild(user);
             if(family.getParent().getRole().getRoleCode().equals(MOM)){
-                System.out.println("***");
                 List<Question> questions=questionRepository.findMomDauRecQuestion();
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()

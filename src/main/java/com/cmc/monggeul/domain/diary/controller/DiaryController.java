@@ -92,7 +92,6 @@ public class DiaryController{
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
         String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
         List<GetQuestionRecommendRes> getQuestionRecommendResList=diaryService.getRecommendQuestion(userEmail);
-        //System.out.println(getQuestionRecommendResList.get(0).getQuestionName());
         return ResponseEntity.ok(new BaseResponse<>(getQuestionRecommendResList));
 
     }
