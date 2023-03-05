@@ -342,6 +342,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
@@ -353,6 +354,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
@@ -367,6 +369,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
@@ -378,6 +381,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
@@ -392,6 +396,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
@@ -403,6 +408,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
@@ -417,6 +423,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
@@ -428,6 +435,7 @@ public class DiaryService {
                                 .questionId(question.getId())
                                 .questionName(question.getName())
                                 .familyId(family.getId())
+                                .categoryName(question.getCategory().getName())
                                 .build()
                 ).collect(Collectors.toList());
 
