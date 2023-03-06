@@ -268,6 +268,8 @@ public class UserService {
             postMatchingRes= PostMatchingRes.builder()
                     .matchingUserName(family.getChild().getName())
                     .familyId(familyId)
+                    .matchingUserProfileImg(matchingUser.orElseThrow(()->new RuntimeException("프로필 이미지가 존재하지 않습니다.")).getProfileImgUrl())
+                    .userProfileImg(user.orElseThrow(()->new RuntimeException("프로필 이미지가 존재하지 않습니다.")).getProfileImgUrl())
                     .build();
 
 
@@ -296,6 +298,8 @@ public class UserService {
             familyId=family.getId();
             postMatchingRes= PostMatchingRes.builder()
                     .matchingUserName(family.getParent().getName())
+                    .matchingUserProfileImg(matchingUser.orElseThrow(()->new RuntimeException("프로필 이미지가 존재하지 않습니다.")).getProfileImgUrl())
+                    .userProfileImg(user.orElseThrow(()->new RuntimeException("프로필 이미지가 존재하지 않습니다.")).getProfileImgUrl())
                     .familyId(familyId)
                     .build();
 

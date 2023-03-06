@@ -23,7 +23,7 @@ public class Family extends BaseEntity {
 
     // 1(유저) : N(매칭 유저)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId") // child임
     private User child;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
