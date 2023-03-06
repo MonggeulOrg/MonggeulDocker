@@ -9,4 +9,8 @@ public class PostMatchingRes {
 
     private String matchingUserName;
     private Long familyId;
+
+    private String userProfileImg;
+
+    private String matchingUserProfileImg;
 }
