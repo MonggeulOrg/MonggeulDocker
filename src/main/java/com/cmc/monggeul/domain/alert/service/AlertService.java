@@ -1,6 +1,7 @@
 package com.cmc.monggeul.domain.alert.service;
 
 import com.cmc.monggeul.domain.alert.dto.GetAlertRes;
+import com.cmc.monggeul.domain.alert.dto.PostResponseAlertRes;
 import com.cmc.monggeul.domain.alert.entity.Alert;
 import com.cmc.monggeul.domain.alert.repository.AlertRepository;
 import com.cmc.monggeul.domain.diary.entity.Diary;
@@ -43,6 +44,7 @@ public class AlertService {
 
         List<GetAlertRes> getAlertResList=alertList.stream().map(
                 alert -> GetAlertRes.builder()
+                        .alertId(alert.getId())
                         .diaryId(alert.getDiary().getId())
                         .senderName(alert.getSender().getName())
                         .questionName(alert.getDiary().getQuestion().getName())
@@ -53,6 +55,14 @@ public class AlertService {
         return getAlertResList;
 
 
+    }
+
+    public PostResponseAlertRes readAlert(Long alertId){
+        Optional<Alert>alert=alertRepository.findById(alertId);
+        alert.orElseThrow(()->new RuntimeException("메세지가 존재하지 않습니다.")).updateRead();
+        return PostResponseAlertRes.builder()
+                .alertId(alert.orElseThrow().getId())
+                .build();
     }
 
     // 작성을 기다리는 글 처리 (createdAt 기준으로 5일이 넘어간 글일 경우)

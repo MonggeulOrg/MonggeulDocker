@@ -1,14 +1,14 @@
 package com.cmc.monggeul.domain.alert;
 
 import com.cmc.monggeul.domain.alert.dto.GetAlertRes;
+import com.cmc.monggeul.domain.alert.dto.PostResponseAlertRes;
 import com.cmc.monggeul.domain.alert.service.AlertService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -28,6 +28,13 @@ public class AlertController {
         String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
         List<GetAlertRes>getAlertResList=alertService.getAlert(userEmail);
         return ResponseEntity.ok(new BaseResponse<>(getAlertResList));
+
+    }
+
+    @PatchMapping("/alert/read/{alertId}")
+    public ResponseEntity<BaseResponse<PostResponseAlertRes>> readAlert(@PathVariable("alertId")Long alertId){
+        PostResponseAlertRes postResponseAlertRes=alertService.readAlert(alertId);
+        return ResponseEntity.ok(new BaseResponse<>(postResponseAlertRes));
 
     }
 
