@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class GetAlertRes {
 
+    private Long alertId;
     private String senderName;
     private LocalDateTime createdAt;
 

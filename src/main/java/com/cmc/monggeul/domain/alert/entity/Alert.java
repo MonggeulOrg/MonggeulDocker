@@ -58,4 +58,8 @@ public class Alert extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="familyId")
     private Family family;
+
+    public void updateRead(){
+        this.isRead=1;
+    }
 }

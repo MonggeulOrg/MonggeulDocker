@@ -18,4 +18,6 @@ public interface AlertRepository extends JpaRepository<Alert,Long> {
 
     @Query("select a from Alert a where a.user.id=:userId and a.isRead=0 and a.diary.id=:diaryId")
     Alert findExistWaitAlert(Long userId, Long diaryId);
+
+    Optional<Alert> findById(Long id);
 }
