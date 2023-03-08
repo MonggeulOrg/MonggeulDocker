@@ -336,7 +336,7 @@ public class DiaryService {
         if(role.equals(MOM)){
             Family family=familyRepository.findByParent(user);
             if(family.getChild().getRole().getRoleCode().equals(DAU)){
-                List<Question> questions=questionRepository.findDauMomRecQuestion();
+                List<Question> questions=questionRepository.findDauMomRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())
@@ -390,7 +390,7 @@ public class DiaryService {
         }else if(role.equals(DAU)){
             Family family=familyRepository.findByChild(user);
             if(family.getParent().getRole().getRoleCode().equals(MOM)){
-                List<Question> questions=questionRepository.findMomDauRecQuestion();
+                List<Question> questions=questionRepository.findMomDauRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())

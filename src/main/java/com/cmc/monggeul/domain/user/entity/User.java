@@ -131,4 +131,18 @@ public class User extends BaseEntity implements UserDetails  {
     public boolean isEnabled() {
         return false;
     }
+
+    public void updateName(String name){
+        this.name=name;
+    }
+
+    public void updateProfileImg(String profileImgUrl){
+        this.profileImgUrl=profileImgUrl;
+    }
+
+    public void updateAge(int age){
+        this.age=age;
+    }
+
+
 }

@@ -27,4 +27,8 @@ public class BaseEntity {
         ACTIVE,
         DELETE
     }
+
+    public void updateStatus(Status status){
+        this.status=status;
+    }
 }
