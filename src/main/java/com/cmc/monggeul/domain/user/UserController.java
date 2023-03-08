@@ -150,6 +150,55 @@ public class UserController {
 
     }
 
+    // [마이페이지] 유저정보 조회
+    @GetMapping("/mypage")
+    public ResponseEntity<BaseResponse<GetUserMyPageDto>> getUserMyPage(HttpServletRequest request){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        GetUserMyPageDto getUserMyPageDto=userService.getUserMyPage(userEmail);
+        return ResponseEntity.ok(new BaseResponse<>(getUserMyPageDto));
+
+    }
+
+
+    // [마이페이지] 회원 정보 수정
+    @PutMapping("/mypage")
+    public ResponseEntity<BaseResponse<GetUserMyPageDto>>patchMyPage(@RequestBody PatchUserMyPageDto patchUserMyPageDto, HttpServletRequest request){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        GetUserMyPageDto getUserMyPageDto=userService.patchMyPage(userEmail,patchUserMyPageDto);
+        return ResponseEntity.ok(new BaseResponse<>(getUserMyPageDto));
+
+    }
+
+
+
+    // [마이페이지] 회원 탈퇴하기
+
+    @PutMapping("/delete")
+    public ResponseEntity<BaseResponse<GetUserMyPageDto>>deleteUser(HttpServletRequest request){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        GetUserMyPageDto getUserMyPageDto=userService.deleteUser(userEmail);
+        return ResponseEntity.ok(new BaseResponse<>(getUserMyPageDto));
+
+    }
+
+    // [마이페이지] 유저 활성화 상태확인
+
+    @GetMapping("/status")
+    public ResponseEntity<BaseResponse<GetUserStatus>>getUserStatus(HttpServletRequest request){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        GetUserStatus getUserStatus=userService.getUserStatus(userEmail);
+        return ResponseEntity.ok(new BaseResponse<>(getUserStatus));
+
+    }
+
+    // [마이페이지] 가족 연결 끊기
+
+    // [마이페이지] 가족 연결 상태 확인
+
 
 
 }

@@ -2,6 +2,7 @@ package com.cmc.monggeul.domain.user.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.cmc.monggeul.domain.diary.repository.DiaryRepository;
 import com.cmc.monggeul.domain.user.dto.*;
 import com.cmc.monggeul.domain.user.entity.Family;
 import com.cmc.monggeul.domain.user.entity.Role;
@@ -9,6 +10,7 @@ import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.domain.user.repository.FamilyRepository;
 import com.cmc.monggeul.domain.user.repository.RoleRepository;
 import com.cmc.monggeul.domain.user.repository.UserRepository;
+import com.cmc.monggeul.global.config.BaseEntity;
 import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
@@ -46,6 +48,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final FamilyRepository familyRepository;
+
+    private final DiaryRepository diaryRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -339,6 +343,156 @@ public class UserService {
                 .build();
 
     }
+
+    public GetUserMyPageDto getUserMyPage(String userEmail){
+        Optional<User>user=userRepository.findByEmail(userEmail);
+        Family family;
+        GetUserMyPageDto getUserMyPageDto=null;
+        int diaryCount=0;
+        if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
+
+            family=familyRepository.findByParent(user);
+            diaryCount=diaryRepository.getDiaryCount(family.getId());
+
+            getUserMyPageDto=GetUserMyPageDto.builder()
+                    .nickname(user.orElseThrow().getName())
+                    .age(user.orElseThrow().getAge())
+                    .diaryCount(diaryCount)
+                    .email(userEmail)
+                    .authType(user.get().getOAuthType())
+                    .userProfileImg(user.orElseThrow().getProfileImgUrl())
+                    .userRole(user.orElseThrow().getRole().getRoleCode())
+                    .communityPostCount(0)
+                    .status(user.orElseThrow().getStatus())
+                    .build();
+
+        }else{
+            family=familyRepository.findByChild(user);
+            diaryCount=diaryRepository.getDiaryCount(family.getId());
+
+            getUserMyPageDto=GetUserMyPageDto.builder()
+                    .nickname(user.orElseThrow().getName())
+                    .age(user.orElseThrow().getAge())
+                    .diaryCount(diaryCount)
+                    .email(userEmail)
+                    .authType(user.get().getOAuthType())
+                    .userProfileImg(user.orElseThrow().getProfileImgUrl())
+                    .userRole(user.orElseThrow().getRole().getRoleCode())
+                    .communityPostCount(0)
+                    .status(user.orElseThrow().getStatus())
+                    .build();
+
+        }
+
+        return getUserMyPageDto;
+
+    }
+
+    // 마이페이지 수정
+    public GetUserMyPageDto patchMyPage(String userEmail,PatchUserMyPageDto patchUserMyPageDto){
+        Optional<User>user=userRepository.findByEmail(userEmail);
+        user.orElseThrow().updateAge(patchUserMyPageDto.getAge());
+        user.orElseThrow().updateName(patchUserMyPageDto.getName());
+        user.orElseThrow().updateProfileImg(patchUserMyPageDto.getProfileImg());
+        Family family;
+        GetUserMyPageDto getUserMyPageDto=null;
+        int diaryCount=0;
+        if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
+
+            family=familyRepository.findByParent(user);
+            diaryCount=diaryRepository.getDiaryCount(family.getId());
+
+            getUserMyPageDto=GetUserMyPageDto.builder()
+                    .nickname(user.orElseThrow().getName())
+                    .age(user.orElseThrow().getAge())
+                    .diaryCount(diaryCount)
+                    .email(userEmail)
+                    .authType(user.get().getOAuthType())
+                    .userProfileImg(user.orElseThrow().getProfileImgUrl())
+                    .userRole(user.orElseThrow().getRole().getRoleCode())
+                    .communityPostCount(0)
+                    .build();
+
+        }else{
+            family=familyRepository.findByChild(user);
+            diaryCount=diaryRepository.getDiaryCount(family.getId());
+
+            getUserMyPageDto=GetUserMyPageDto.builder()
+                    .nickname(user.orElseThrow().getName())
+                    .age(user.orElseThrow().getAge())
+                    .diaryCount(diaryCount)
+                    .email(userEmail)
+                    .authType(user.get().getOAuthType())
+                    .userProfileImg(user.orElseThrow().getProfileImgUrl())
+                    .userRole(user.orElseThrow().getRole().getRoleCode())
+                    .communityPostCount(0)
+                    .build();
+
+        }
+
+        return getUserMyPageDto;
+
+
+    }
+
+    // 회원탈퇴하기
+    public GetUserMyPageDto deleteUser(String userEmail){
+        Optional<User>user=userRepository.findByEmail(userEmail);
+        user.orElseThrow().updateStatus(BaseEntity.Status.DELETE);
+        Family family;
+        GetUserMyPageDto getUserMyPageDto=null;
+        int diaryCount=0;
+        if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
+
+            family=familyRepository.findByParent(user);
+            diaryCount=diaryRepository.getDiaryCount(family.getId());
+
+            getUserMyPageDto=GetUserMyPageDto.builder()
+                    .nickname(user.orElseThrow().getName())
+                    .age(user.orElseThrow().getAge())
+                    .diaryCount(diaryCount)
+                    .email(userEmail)
+                    .authType(user.get().getOAuthType())
+                    .userProfileImg(user.orElseThrow().getProfileImgUrl())
+                    .userRole(user.orElseThrow().getRole().getRoleCode())
+                    .communityPostCount(0)
+                    .status(user.orElseThrow().getStatus())
+                    .build();
+
+        }else{
+            family=familyRepository.findByChild(user);
+            diaryCount=diaryRepository.getDiaryCount(family.getId());
+
+            getUserMyPageDto=GetUserMyPageDto.builder()
+                    .nickname(user.orElseThrow().getName())
+                    .age(user.orElseThrow().getAge())
+                    .diaryCount(diaryCount)
+                    .email(userEmail)
+                    .authType(user.get().getOAuthType())
+                    .userProfileImg(user.orElseThrow().getProfileImgUrl())
+                    .userRole(user.orElseThrow().getRole().getRoleCode())
+                    .communityPostCount(0)
+                    .status(user.orElseThrow().getStatus())
+                    .build();
+
+        }
+
+        return getUserMyPageDto;
+
+
+    }
+
+    // 유저가 active인지 아닌지 확인
+    public GetUserStatus getUserStatus(String userEmail){
+        Optional<User>user=userRepository.findByEmail(userEmail);
+        return GetUserStatus.builder()
+                .nickname(user.orElseThrow().getName())
+                .email(user.orElseThrow().getEmail())
+                .status(user.orElseThrow().getStatus())
+                .build();
+
+    }
+
 
 
 
