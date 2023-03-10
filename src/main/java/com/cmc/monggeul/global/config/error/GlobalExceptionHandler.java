@@ -6,6 +6,7 @@ import com.cmc.monggeul.global.config.error.exception.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -118,6 +119,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getCode())
                 .body(new BaseResponse<>(e));
+    }
+
+    //Runtime Exception
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> RuntimeException(RuntimeException e, HttpServletRequest request) {
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     // 이외 Error

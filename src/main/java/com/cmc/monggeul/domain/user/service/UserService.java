@@ -493,6 +493,35 @@ public class UserService {
 
     }
 
+    // 가족 연결 끊기
+    public GetFamilyDto deleteFamily(Long familyId){
+        Optional<Family>family=familyRepository.findById(familyId);
+        family.orElseThrow(()-> new RuntimeException("가족이 존재하지 않습니다")).updateStatus(BaseEntity.Status.DELETE);
+        return GetFamilyDto.builder()
+                .familyId(familyId)
+                .childId(family.orElseThrow().getChild().getId())
+                .childName(family.orElseThrow().getChild().getName())
+                .parentId(family.orElseThrow().getParent().getId())
+                .parentName(family.orElseThrow().getParent().getName())
+                .status(family.orElseThrow().getStatus())
+                .build();
+
+    }
+
+    // 가족 연결상태 확인
+    public GetFamilyDto getFamilyStatus(Long familyId){
+        Optional<Family>family=familyRepository.findById(familyId);
+        return GetFamilyDto.builder()
+                .familyId(familyId)
+                .childId(family.orElseThrow().getChild().getId())
+                .childName(family.orElseThrow().getChild().getName())
+                .parentId(family.orElseThrow().getParent().getId())
+                .parentName(family.orElseThrow().getParent().getName())
+                .status(family.orElseThrow().getStatus())
+                .build();
+
+    }
+
 
 
 

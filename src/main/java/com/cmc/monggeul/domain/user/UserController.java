@@ -14,6 +14,7 @@ import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,6 +89,9 @@ public class UserController {
 
 
     // 카카오 로그인
+    @ApiOperation(
+            value = "카카오 로그인",
+            notes = "카카오 accessToken을 통해 로그인하는 api")
     @PostMapping("/kakao/login")
     public ResponseEntity<BaseResponse<PostLoginRes>> postKakaoLogin(@RequestBody PostKakaoLoginReq postKakaoLoginReq) {
         KakaoUserDto kakaoUserDto=kakaoService.createKakaoUser(postKakaoLoginReq.getKakaoAccessToken());
@@ -97,6 +101,9 @@ public class UserController {
 
     // 구글 로그인
 
+    @ApiOperation(
+            value = "구글 로그인",
+            notes = "구글 accessToken을 통해 로그인하는 api")
     @PostMapping("/google/login")
     public ResponseEntity<BaseResponse<PostLoginRes>> googleLogin(@RequestBody PostGoogleLoginReq postGoogleLoginReq) throws org.json.simple.parser.ParseException {
 
@@ -107,6 +114,9 @@ public class UserController {
     }
 
     //애플 로그인
+    @ApiOperation(
+            value = "애플 로그인",
+            notes = "기본 로그인 api")
     @PostMapping("/apple/login")
     public ResponseEntity<BaseResponse<PostLoginRes>> appleLogin(@RequestBody PostAppleLoginReq postAppleLoginReq){
 
@@ -120,6 +130,9 @@ public class UserController {
 
     // 매칭 완료 -> 상대방 코드 입력 -> 상대방 코드 복호화 -> Matching 테이블에 넣을 것
 
+    @ApiOperation(
+            value = "[로그인] 부모/자녀 매칭",
+            notes = "상대방의 매칭코드를 입력하는 family 객체가 만들어지는 api")
     @PostMapping("/matching")
     public ResponseEntity<BaseResponse<PostMatchingRes>> matching(@RequestBody PostMatchingReq postMatchingReq, HttpServletRequest httpServletRequest){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
@@ -131,6 +144,9 @@ public class UserController {
     }
 
     // 매칭코드,familyId 조회
+    @ApiOperation(
+            value = "[로그인,홈] 유저의 매칭코드,familyId 조회",
+            notes = "matchingCode와 familyId 조회하는 api")
     @GetMapping("/matching")
     public ResponseEntity<BaseResponse<GetUserMatchingCodeRes>> getMatchingCode(HttpServletRequest request){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
@@ -141,6 +157,9 @@ public class UserController {
     }
 
     //매칭코드에 대한 유저정보 조회
+    @ApiOperation(
+            value = "[로그인,홈]유저의 매칭코드에 따른 유저 정보조회",
+            notes = "로그인한 유저의 페이지에서, 회원 정보에 해당하는 부분을 불러오는 API")
     @GetMapping("/matching/{matchingCode}")
     public ResponseEntity<BaseResponse<GetUserInfoByMatchingCodeRes>>getUserInfoByMatchingCode(@PathVariable("matchingCode")String matchingCode){
 
@@ -185,6 +204,9 @@ public class UserController {
     }
 
     // [마이페이지] 유저 활성화 상태확인
+    @ApiOperation(
+            value = "[홈] 유저 active/delete 여부 확인",
+            notes = "유저가 현재 서비스에 탈퇴했는지 아닌지 여부를 조회하는 api")
 
     @GetMapping("/status")
     public ResponseEntity<BaseResponse<GetUserStatus>>getUserStatus(HttpServletRequest request){
@@ -197,7 +219,30 @@ public class UserController {
 
     // [마이페이지] 가족 연결 끊기
 
+    @ApiOperation(
+            value = "[마이페이지] family 연결 끊기",
+            notes = "가족 연결 끊는 api")
+    @PutMapping("/family/delete/{familyId}")
+    public ResponseEntity<BaseResponse<GetFamilyDto>>deleteFamily(@PathVariable("familyId")Long familyId){
+
+        GetFamilyDto getFamilyDto=userService.deleteFamily(familyId);
+        return ResponseEntity.ok(new BaseResponse<>(getFamilyDto));
+    }
+
     // [마이페이지] 가족 연결 상태 확인
+    @ApiOperation(
+            value = "[마이페이지] family 연결 상태 확인",
+            notes = "가족 연결 끊는 api")
+    @GetMapping("/family/status/{familyId}")
+    public ResponseEntity<BaseResponse<GetFamilyDto>>getFamilyStatus(@PathVariable("familyId")Long familyId){
+        GetFamilyDto getFamilyDto=userService.getFamilyStatus(familyId);
+        return  ResponseEntity.ok(new BaseResponse<>(getFamilyDto));
+    }
+
+
+
+
+
 
 
 
