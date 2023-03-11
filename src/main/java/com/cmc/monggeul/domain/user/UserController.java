@@ -2,6 +2,7 @@ package com.cmc.monggeul.domain.user;
 
 import com.cmc.monggeul.domain.user.dto.*;
 import com.cmc.monggeul.domain.user.dto.PostKakaoLoginReq;
+import com.cmc.monggeul.domain.user.entity.User;
 import com.cmc.monggeul.domain.user.service.UserService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.error.ErrorCode;
@@ -232,11 +233,23 @@ public class UserController {
     // [마이페이지] 가족 연결 상태 확인
     @ApiOperation(
             value = "[마이페이지] family 연결 상태 확인",
-            notes = "가족 연결 끊는 api")
+            notes = "가족 연결됐는지 확인하는 api")
     @GetMapping("/family/status/{familyId}")
     public ResponseEntity<BaseResponse<GetFamilyDto>>getFamilyStatus(@PathVariable("familyId")Long familyId){
         GetFamilyDto getFamilyDto=userService.getFamilyStatus(familyId);
         return  ResponseEntity.ok(new BaseResponse<>(getFamilyDto));
+    }
+
+    // [로그인]
+    @ApiOperation(
+            value = "[로그인] 소셜로그인 accessToken만으로 로그인 ",
+            notes = "accessToken,소셜로그인 타입,이메일만 가지고 로그인")
+    @PostMapping("/login")
+    public ResponseEntity<BaseResponse<PostLoginRes>>Login(@RequestBody PostLoginReq postLoginReq){
+        PostLoginRes postLoginRes=userService.login(postLoginReq);
+        return ResponseEntity.ok(new BaseResponse<>(postLoginRes));
+
+
     }
 
 

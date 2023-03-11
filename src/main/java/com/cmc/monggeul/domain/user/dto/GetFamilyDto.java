@@ -11,8 +11,12 @@ public class GetFamilyDto {
     private Long familyId;
     private Long childId;
     private String childName;
+
+    private String childImg;
     private Long parentId;
     private String parentName;
+
+    private String parentImg;
 
     private BaseEntity.Status status;
 }

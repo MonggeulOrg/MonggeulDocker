@@ -14,6 +14,7 @@ import com.cmc.monggeul.global.config.BaseEntity;
 import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
+import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
 import com.cmc.monggeul.global.config.security.SecurityConfig;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
@@ -60,6 +61,8 @@ public class UserService {
     private final GenerateCertNumber generateCertNumber;
 
     private final GoogleOAuth googleOAuth;
+
+    private final KakaoService kakaoService;
 
 
 
@@ -516,10 +519,36 @@ public class UserService {
                 .childId(family.orElseThrow().getChild().getId())
                 .childName(family.orElseThrow().getChild().getName())
                 .parentId(family.orElseThrow().getParent().getId())
+                .childImg(family.orElseThrow().getChild().getProfileImgUrl())
+                .parentImg(family.orElseThrow().getParent().getProfileImgUrl())
                 .parentName(family.orElseThrow().getParent().getName())
                 .status(family.orElseThrow().getStatus())
                 .build();
 
+    }
+
+    // [로그인] accessToken이랑 이메일만 가지고 로그인
+
+    public PostLoginRes login(PostLoginReq postLoginReq){
+        User.OAuthType oAuthType=postLoginReq.getOAuthType();
+        PostLoginRes postLoginRes;
+        Authentication authentication=new UsernamePasswordAuthenticationToken(postLoginReq.getEmail(),null,null);
+        TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+        Optional<User> user=userRepository.findByEmail(postLoginReq.getEmail());
+        if(oAuthType.equals(User.OAuthType.KAKAO)){
+            KakaoUserDto kakaoUserDto=kakaoService.createKakaoUser(postLoginReq.getAccessToken());
+            postLoginRes=PostLoginRes.builder()
+                    .grantType(tokenDto.getGrantType())
+                    .accessToken(tokenDto.getAccessToken())
+                    .refreshToken(tokenDto.getRefreshToken())
+                    .build();
+
+        }else if(oAuthType.equals(User.OAuthType.GOOGLE)){
+
+        }else if(oAuthType.equals(User.OAuthType.APPLE)){
+
+        }
+        return null;
     }
 
 
