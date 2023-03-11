@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +35,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -120,6 +120,7 @@ public class UserService {
                 .grantType(tokenDto.getGrantType())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshToken(tokenDto.getRefreshToken())
+                .profileImg(user.orElseThrow().getProfileImgUrl())
                 .code(user.get().getMatchingCode())
                 .build();
 
@@ -178,6 +179,7 @@ public class UserService {
                 .accessToken(tokenDto.getAccessToken())
                 .refreshToken(tokenDto.getRefreshToken())
                 .code(user.get().getMatchingCode())
+                .profileImg(user.orElseThrow().getProfileImgUrl())
                 .build();
 
     }
@@ -243,6 +245,7 @@ public class UserService {
                 .accessToken(tokenDto.getAccessToken())
                 .refreshToken(tokenDto.getRefreshToken())
                 .code(user.get().getMatchingCode())
+                .profileImg(user.orElseThrow().getProfileImgUrl())
                 .build();
 
     }
@@ -529,26 +532,77 @@ public class UserService {
 
     // [로그인] accessToken이랑 이메일만 가지고 로그인
 
-    public PostLoginRes login(PostLoginReq postLoginReq){
+    public PostLoginRes login(PostLoginReq postLoginReq) throws ParseException {
         User.OAuthType oAuthType=postLoginReq.getOAuthType();
-        PostLoginRes postLoginRes;
-        Authentication authentication=new UsernamePasswordAuthenticationToken(postLoginReq.getEmail(),null,null);
-        TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+        PostLoginRes postLoginRes=null;
+
         Optional<User> user=userRepository.findByEmail(postLoginReq.getEmail());
         if(oAuthType.equals(User.OAuthType.KAKAO)){
             KakaoUserDto kakaoUserDto=kakaoService.createKakaoUser(postLoginReq.getAccessToken());
+            Authentication authentication=new UsernamePasswordAuthenticationToken(kakaoUserDto.getEmail(),null,null);
+            TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+            DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
+            System.out.println(decodedJWT.getToken().toString());
+
+            redisTemplate.opsForValue()
+                    .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+
+           postLoginRes= PostLoginRes.builder()
+                    .grantType(tokenDto.getGrantType())
+                    .accessToken(tokenDto.getAccessToken())
+                    .refreshToken(tokenDto.getRefreshToken())
+                    .code(user.get().getMatchingCode())
+                    .profileImg(user.orElseThrow().getProfileImgUrl())
+                    .build();
+
+
+
+        }else if(oAuthType.equals(User.OAuthType.GOOGLE)){
+            GoogleUserDto googleUserDto=googleOAuth.requestUserInfo(postLoginReq.getAccessToken());
+            Authentication authentication=new UsernamePasswordAuthenticationToken(googleUserDto.getEmail(),null,null);
+            TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+
+
+            // redis에 refresh token 저장
+            // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+            // refresh token을 복호화한 후 만료기한을 redis에 저장할 것
+            DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
+            System.out.println(decodedJWT.getToken().toString());
+
+            redisTemplate.opsForValue()
+                    .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+
             postLoginRes=PostLoginRes.builder()
                     .grantType(tokenDto.getGrantType())
                     .accessToken(tokenDto.getAccessToken())
                     .refreshToken(tokenDto.getRefreshToken())
+                    .code(user.get().getMatchingCode())
+                    .profileImg(user.orElseThrow().getProfileImgUrl())
                     .build();
 
-        }else if(oAuthType.equals(User.OAuthType.GOOGLE)){
-
         }else if(oAuthType.equals(User.OAuthType.APPLE)){
+            Authentication authentication=new UsernamePasswordAuthenticationToken(postLoginReq.getEmail(),null,null);
+            TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
+
+            // redis에 refresh token 저장
+            // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
+            // refresh token을 복호화한 후 만료기한을 redis에 저장할 것
+            DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
+            System.out.println(decodedJWT.getToken().toString());
+
+            redisTemplate.opsForValue()
+                    .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+
+            postLoginRes= PostLoginRes.builder()
+                    .grantType(tokenDto.getGrantType())
+                    .accessToken(tokenDto.getAccessToken())
+                    .refreshToken(tokenDto.getRefreshToken())
+                    .code(user.get().getMatchingCode())
+                    .profileImg(user.orElseThrow().getProfileImgUrl())
+                    .build();
 
         }
-        return null;
+        return postLoginRes;
     }
 
 

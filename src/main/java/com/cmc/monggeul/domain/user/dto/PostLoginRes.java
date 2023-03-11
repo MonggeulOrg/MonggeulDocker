@@ -10,6 +10,8 @@ public class PostLoginRes {
     private String accessToken;
     private String refreshToken;
 
+    private String profileImg;
+
     //인증코드
     private String code;
 }

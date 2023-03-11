@@ -56,6 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return (
                         pathMatcher.match("/", path) && request.getMethod().equals("GET") ||
                         pathMatcher.match("/user/apple/login", path) && request.getMethod().equals("POST") ||
+                                pathMatcher.match("/user/login/access", path) && request.getMethod().equals("POST") ||
                         pathMatcher.match("/user/test/apple/access", path) && request.getMethod().equals("POST") ||
                         pathMatcher.match("/user/test/kakao/code", path) && request.getMethod().equals("GET") ||
                         pathMatcher.match("/user/kakao/login", path) && request.getMethod().equals("POST") ||

@@ -41,17 +41,34 @@ public class HomeService {
 
     public GetDateDto getDday(Long familyId,String userEmail){
         Optional<User>user=userRepository.findByEmail(userEmail);
+        String role=user.orElseThrow().getRole().getRoleCode();
         Optional<Family> family=familyRepository.findById(familyId);
         LocalDateTime startDateTime=family.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getCreatedAt();
         LocalDateTime endDateTime=LocalDateTime.now();
         int days= (int) ChronoUnit.DAYS.between(startDateTime,endDateTime);
+        GetDateDto getDateDto;
+        if(role.equals(MOM)||role.equals(DAD)){
+            getDateDto=GetDateDto.builder()
+                    .userRole(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode())
+                    .userProfileImg(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getProfileImgUrl())
+                    .matchingUserProfileImg(family.orElseThrow().getChild().getProfileImgUrl())
+                    .matchingUserRole(family.orElseThrow().getChild().getRole().getRoleCode())
+                    .days(days)
+                    .build();
+        }else{
+            getDateDto=GetDateDto.builder()
+                    .userRole(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode())
+                    .userProfileImg(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getProfileImgUrl())
+                    .matchingUserProfileImg(family.orElseThrow().getParent().getProfileImgUrl())
+                    .matchingUserRole(family.orElseThrow().getParent().getRole().getRoleCode())
+                    .days(days)
+                    .build();
+
+        }
 
 
-        return GetDateDto.builder()
-                .role(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode())
-                .profileImg(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getProfileImgUrl())
-                .days(days)
-                .build();
+
+        return getDateDto;
     }
 
     public List<GetRecentDiaryRes> getRecentDiary(String userEmail){
