@@ -38,33 +38,33 @@ public interface QuestionRepository extends JpaRepository<Question,Long> {
     // 아들 -> 엄마
     @Query("select q from Question q join fetch q.category left outer join UserQuestionMapping  uq on uq.question.id=q.id and uq.user=:user "+
             "where uq.question.id is null and  (q.category.code='MOM_SON' or q.category.code='REMEMBER' or q.category.code='THINK' or q.category.code='YOUNG' )" )
-    List<Question>findMomSonRecQuestion();
+    List<Question>findMomSonRecQuestion(Optional<User> user);
 
     // 엄마 -> 아들
     @Query("select q from Question q join fetch q.category left outer join UserQuestionMapping  uq on uq.question.id=q.id and uq.user=:user " +
             "where uq.question.id is null and  (q.category.code='SON_MOM' or q.category.code='REMEMBER' or q.category.code='THINK' or q.category.code='YOUNG' ) "
      )
-    List<Question>findSonMomRecQuestion();
+    List<Question>findSonMomRecQuestion(Optional<User> user);
 
     // 딸 -> 아빠
     @Query("select q from Question q join fetch q.category left outer join UserQuestionMapping  uq on uq.question.id=q.id and uq.user=:user " +
             "where uq.question.id is null and  (q.category.code='DAD_DAU' or q.category.code='REMEMBER' or q.category.code='THINK' or q.category.code='YOUNG' ) " )
-    List<Question> findDadDauRecQuestion();
+    List<Question> findDadDauRecQuestion(Optional<User> user);
 
     // 아빠 -> 딸
     @Query("select q from Question q join fetch q.category left outer join UserQuestionMapping  uq on uq.question.id=q.id and uq.user=:user " +
             "where uq.question.id is null and  (q.category.code='DAU_DAD' or q.category.code='REMEMBER' or q.category.code='THINK' or q.category.code='YOUNG' ) " )
-    List<Question> findDauDadRecQuestion();
+    List<Question> findDauDadRecQuestion(Optional<User> user);
 
     // 아들 -> 아빠
     @Query("select q from Question q join fetch q.category left outer join UserQuestionMapping  uq on uq.question.id=q.id and uq.user=:user "+
             "where uq.question.id is null and  (q.category.code='DAD_SON' or q.category.code='REMEMBER' or q.category.code='THINK' or q.category.code='YOUNG' ) "
        )
-    List<Question> findDadSonRecQuestion();
+    List<Question> findDadSonRecQuestion(Optional<User> user);
 
     //아빠 -> 아들
     @Query("select q from Question q join fetch q.category left outer join UserQuestionMapping  uq on uq.question.id=q.id " +
             "where uq.question.id is null and  (q.category.code='SON_DAD' or q.category.code='REMEMBER' or q.category.code='THINK' or q.category.code='YOUNG' ) " )
-    List<Question>findSonDadRecQuestion();
+    List<Question>findSonDadRecQuestion(Optional<User> user);
 
 }
