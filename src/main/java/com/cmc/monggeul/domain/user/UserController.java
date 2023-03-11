@@ -244,8 +244,8 @@ public class UserController {
     @ApiOperation(
             value = "[로그인] 소셜로그인 accessToken만으로 로그인 ",
             notes = "accessToken,소셜로그인 타입,이메일만 가지고 로그인")
-    @PostMapping("/login")
-    public ResponseEntity<BaseResponse<PostLoginRes>>Login(@RequestBody PostLoginReq postLoginReq){
+    @PostMapping("/login/access")
+    public ResponseEntity<BaseResponse<PostLoginRes>>Login(@RequestBody PostLoginReq postLoginReq) throws org.json.simple.parser.ParseException {
         PostLoginRes postLoginRes=userService.login(postLoginReq);
         return ResponseEntity.ok(new BaseResponse<>(postLoginRes));
 
