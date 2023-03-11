@@ -333,6 +333,7 @@ public class DiaryService {
         String role=user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode();
         List<GetQuestionRecommendRes>questionRecommendResList=new ArrayList<>();
 
+        System.out.println(userEmail);
         if(role.equals(MOM)){
             Family family=familyRepository.findByParent(user);
             if(family.getChild().getRole().getRoleCode().equals(DAU)){
@@ -348,7 +349,7 @@ public class DiaryService {
 
 
             }else if(family.getChild().getRole().getRoleCode().equals(SON)){
-                List<Question> questions=questionRepository.findSonMomRecQuestion();
+                List<Question> questions=questionRepository.findSonMomRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())
@@ -363,7 +364,7 @@ public class DiaryService {
             Family family=familyRepository.findByParent(user);
 
             if(family.getChild().getRole().getRoleCode().equals(DAU)){
-                List<Question> questions=questionRepository.findDauDadRecQuestion();
+                List<Question> questions=questionRepository.findDauDadRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())
@@ -375,7 +376,7 @@ public class DiaryService {
 
 
             }else if(family.getChild().getRole().getRoleCode().equals(SON)){
-                List<Question> questions=questionRepository.findSonDadRecQuestion();
+                List<Question> questions=questionRepository.findSonDadRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())
@@ -402,7 +403,7 @@ public class DiaryService {
 
 
             }else if(family.getParent().getRole().getRoleCode().equals(DAD)){
-                List<Question> questions=questionRepository.findDadDauRecQuestion();
+                List<Question> questions=questionRepository.findDadDauRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())
@@ -417,7 +418,7 @@ public class DiaryService {
         }else if(role.equals(SON)){
             Family family=familyRepository.findByChild(user);
             if(family.getParent().getRole().getRoleCode().equals(MOM)){
-                List<Question> questions=questionRepository.findMomSonRecQuestion();
+                List<Question> questions=questionRepository.findMomSonRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())
@@ -429,7 +430,7 @@ public class DiaryService {
 
 
             }else if(family.getParent().getRole().getRoleCode().equals(DAD)){
-                List<Question> questions=questionRepository.findDadSonRecQuestion();
+                List<Question> questions=questionRepository.findDadSonRecQuestion(user);
                 questionRecommendResList=questions.stream().map(
                         question -> GetQuestionRecommendRes.builder()
                                 .questionId(question.getId())

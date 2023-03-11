@@ -88,7 +88,7 @@ public class DiaryController{
     // [기록하기] 질문 추천 api
     @GetMapping("/question/recommend")
     public ResponseEntity<BaseResponse<List<GetQuestionRecommendRes>>>getRecommendQuestion(HttpServletRequest request){
-        System.out.println("**");
+
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
         String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
         List<GetQuestionRecommendRes> getQuestionRecommendResList=diaryService.getRecommendQuestion(userEmail);
