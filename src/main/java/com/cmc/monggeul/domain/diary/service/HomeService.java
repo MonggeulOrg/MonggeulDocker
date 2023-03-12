@@ -13,6 +13,8 @@ import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -77,8 +79,10 @@ public class HomeService {
         List<Diary> diaryList;
         List<Diary> topFiveDiaryList=new ArrayList<>(5);
         List<GetRecentDiaryRes> getRecentDiaryResList=new ArrayList<>();
+        Pageable pageable=PageRequest.of(0,5);
         if(role.equals(MOM)||role.equals(DAD)){
-            diaryList=diaryRepository.findParentRecentPost(user.get().getId());
+
+            diaryList=diaryRepository.findParentRecentPost(user.get().getId(),pageable);
             getRecentDiaryResList=diaryList.stream().map(
                     diary->GetRecentDiaryRes.builder()
                             .diaryId(diary.getId())
@@ -91,7 +95,7 @@ public class HomeService {
 
 
         }else if(role.equals(SON)||role.equals(DAU)){
-            diaryList=diaryRepository.findChildRecentPost(user.get().getId());
+            diaryList=diaryRepository.findChildRecentPost(user.get().getId(),pageable);
             getRecentDiaryResList=diaryList.stream().map(
                     diary->GetRecentDiaryRes.builder()
                             .diaryId(diary.getId())
