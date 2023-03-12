@@ -5,6 +5,7 @@ import com.cmc.monggeul.domain.diary.service.S3Service;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,8 @@ public class S3Controller {
     private final JwtTokenProvider jwtTokenProvider;
 
 
+    @ApiOperation(
+            value ="[Global] 이미지 업로드" )
 
     @PostMapping("/upload")
     public ResponseEntity<BaseResponse<S3ImageDto>>uploadFile(@RequestParam MultipartFile multipartFile, HttpServletRequest httpServletRequest)

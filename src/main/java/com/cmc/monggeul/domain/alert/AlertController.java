@@ -6,6 +6,7 @@ import com.cmc.monggeul.domain.alert.service.AlertService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,8 @@ public class AlertController {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @ApiOperation(
+            value ="[홈] 메세지 조회" )
     @GetMapping("/alert")
     public ResponseEntity<BaseResponse<List<GetAlertRes>>>getAlert(HttpServletRequest request){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
@@ -31,6 +34,8 @@ public class AlertController {
 
     }
 
+    @ApiOperation(
+            value ="[홈] 메세지 확인" )
     @PatchMapping("/alert/read/{alertId}")
     public ResponseEntity<BaseResponse<PostResponseAlertRes>> readAlert(@PathVariable("alertId")Long alertId){
         PostResponseAlertRes postResponseAlertRes=alertService.readAlert(alertId);

@@ -171,6 +171,9 @@ public class UserController {
     }
 
     // [마이페이지] 유저정보 조회
+    @ApiOperation(
+            value = "[마이페이지] 유저정보 조회",
+            notes = "마이페이지에서 유저 개인정보 조회하는 api")
     @GetMapping("/mypage")
     public ResponseEntity<BaseResponse<GetUserMyPageDto>> getUserMyPage(HttpServletRequest request){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
@@ -182,6 +185,8 @@ public class UserController {
 
 
     // [마이페이지] 회원 정보 수정
+    @ApiOperation(
+            value = "[마이페이지] 회원 정보 수정")
     @PutMapping("/mypage")
     public ResponseEntity<BaseResponse<GetUserMyPageDto>>patchMyPage(@RequestBody PatchUserMyPageDto patchUserMyPageDto, HttpServletRequest request){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
@@ -194,6 +199,8 @@ public class UserController {
 
 
     // [마이페이지] 회원 탈퇴하기
+    @ApiOperation(
+            value = "[마이페이지] 회원 탈퇴하기")
 
     @PutMapping("/delete")
     public ResponseEntity<BaseResponse<GetUserMyPageDto>>deleteUser(HttpServletRequest request){
