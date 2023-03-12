@@ -17,7 +17,7 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface DiaryRepository extends JpaRepository<Diary,Long> {
 
-    @Query(value = "select d from Diary d where d.family.parent.id=:parentId and d.parentStatus='RESPONSE' and d.family.status='ACTIVE' order by d.createdAt desc")
+    @Query(value = "select d from Diary d  where d.family.parent.id=:parentId and d.parentStatus='RESPONSE' and d.family.status='ACTIVE'  order by d.createdAt ")
     List<Diary>findParentRecentPost(Long parentId);
 
     @Query(value = "select d from Diary d where d.family.child.id=:childId and d.childStatus='RESPONSE' order by d.createdAt desc")
@@ -34,7 +34,7 @@ public interface DiaryRepository extends JpaRepository<Diary,Long> {
     @Query(value = "select * from Diary as  d join Family as f on f.id=d.familyId where f.userId=:childId and d.childStatus='NO_RESPONSE' and TIMESTAMPDIFF(DAY,d.createdAt,CURRENT_DATE())>=5",nativeQuery = true)
     List<Diary>childNotResponseMoreThanFive(@Param("childId")Long childId);
 
-    @Query("select count(d.id) from Diary d where d.family.id=:familyId  group by d.family.id")
+    @Query("select count(d.id) from Diary d where d.family.id=:familyId")
     int getDiaryCount(@Param("familyId")Long familyId);
 
 
