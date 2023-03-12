@@ -15,6 +15,7 @@ import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Api(tags = "로그인,매칭,마이페이지 관련")
 public class UserController {
     // 생성자 주입
     private final KakaoService kakaoService;

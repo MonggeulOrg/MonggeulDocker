@@ -24,6 +24,7 @@ jar {
 dependencies {
     // Swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 
     // jwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'

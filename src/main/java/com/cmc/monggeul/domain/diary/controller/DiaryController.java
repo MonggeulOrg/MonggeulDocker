@@ -9,6 +9,7 @@ import com.cmc.monggeul.domain.diary.service.DiaryService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/diary")
+@Api(tags = "기록하기")
 public class DiaryController{
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
