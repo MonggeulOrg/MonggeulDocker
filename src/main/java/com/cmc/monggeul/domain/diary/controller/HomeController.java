@@ -7,6 +7,7 @@ import com.cmc.monggeul.domain.diary.service.HomeService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,8 @@ public class HomeController {
 
 
     // [홈] 디데이 계산기
+    @ApiOperation(
+            value ="[홈] 디데이 조회 " )
     @GetMapping("/day/{familyId}")
     public ResponseEntity<BaseResponse<GetDateDto>> getDday(@PathVariable("familyId")Long familyId,HttpServletRequest httpServletRequest){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
@@ -43,6 +46,8 @@ public class HomeController {
     }
 
     // [홈] 최근 쓴 일기 보기
+    @ApiOperation(
+            value ="[홈] 공유일기 최신순 조회" )
     @GetMapping("/recent")
     public ResponseEntity<BaseResponse<List<GetRecentDiaryRes>>> getRecentDiary(HttpServletRequest request){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);

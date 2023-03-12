@@ -9,6 +9,7 @@ import com.cmc.monggeul.domain.diary.service.DiaryService;
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,8 @@ public class DiaryController{
     // 이메일을을 통해 유저정보를 받아온다 => 유저의 role을 가져온다.
     // familyId를 받아온다 => familyId에서 상대 유저의 role을 가져온다
     // 상대 유저와 유저의 교집합에 해당하는 카테고리를 반환한다.
+    @ApiOperation(
+            value ="[기록하기] 유저별 카테고리 조회" )
     @GetMapping("/category/family/{familyId}")
     public ResponseEntity<BaseResponse<List<GetCategoryRes>>>getCategory(@PathVariable("familyId")Long familyId, HttpServletRequest httpServletRequest){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
@@ -41,6 +44,8 @@ public class DiaryController{
 
 
     // [기록하기] 카테고리별 질문조회
+    @ApiOperation(
+            value = "[기록하기] 카테고리별 질문조회")
     @GetMapping("/question/category")
     public ResponseEntity<BaseResponse<List<GetQuestionRes>>>getQuestion(@RequestParam("categoryCode")String categoryCode){
         List<GetQuestionRes> getQuestionRes=diaryService.getQuestion(categoryCode);
@@ -50,6 +55,8 @@ public class DiaryController{
 
 
     // [기록하기] 공유일기를 시작하는 경우
+    @ApiOperation(
+            value ="[기록하기]공유일기 작성 (최초로 적는경우)" )
     @PostMapping("/create")
     public ResponseEntity<BaseResponse<PostDiaryRes>>createDiary(@RequestBody PostDiaryReq postDiaryReq,HttpServletRequest request){
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
@@ -60,6 +67,8 @@ public class DiaryController{
     }
 
     // [기록하기] 공유일기에 응답하는 경우
+    @ApiOperation(
+            value = "[기록하기] 공유일기 작성 (응답해서 적는 경우)")
     @PostMapping("/response")
     public ResponseEntity<BaseResponse<PostDiaryRes>>postResponseDiary(@RequestBody PostResponseDiaryReq postResponseDiaryReq,HttpServletRequest request){
 
@@ -70,7 +79,8 @@ public class DiaryController{
     }
 
     // [홈,기록하기] 일기 상세조회
-
+    @ApiOperation(
+            value = "[홈,기록하기] 일기 상세 조회 ")
     @GetMapping("/{diaryId}")
     public ResponseEntity<BaseResponse<GetDiaryDetailRes>>getDiaryDetail(@PathVariable("diaryId")Long diaryId){
 
@@ -79,6 +89,8 @@ public class DiaryController{
     }
 
     // [기록하기] 추억 확인하기
+    @ApiOperation(
+            value = "[기록하기] 최근 답한 질문 조회 (날짜순,응답순)")
     @GetMapping("/question/family/{familyId}")
     public ResponseEntity<BaseResponse<List<GetConfirmQuestionRes>>> getConfirmQuestion(@PathVariable("familyId")Long familyId){
         List<GetConfirmQuestionRes> getConfirmQuestionResList=diaryService.getConfirmQuestion(familyId);
@@ -86,6 +98,8 @@ public class DiaryController{
     }
 
     // [기록하기] 질문 추천 api
+    @ApiOperation(
+            value ="[기록하기] 추천 질문 조회" )
     @GetMapping("/question/recommend")
     public ResponseEntity<BaseResponse<List<GetQuestionRecommendRes>>>getRecommendQuestion(HttpServletRequest request){
 
