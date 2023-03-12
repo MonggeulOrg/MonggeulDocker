@@ -255,26 +255,27 @@ public class UserService {
         Optional<User> user= Optional.ofNullable(userRepository.findByEmail(userEmail).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST)));
         Optional<User> matchingUser= Optional.ofNullable(userRepository.findByMatchingCode(matchingUserCode).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST)));
 
-        System.out.println(user.get().getRole().getRoleCode());
 
         PostMatchingRes postMatchingRes = null;
+        System.out.println(familyRepository.findByParent(user));
         if(user.get().getRole().getRoleCode().equals("MOM")||user.get().getRole().getRoleCode().equals("DAD")){
+
             // 이미 매칭이 됐을 경우
             Long familyId=0L;
             Family family=null;
 
-            if(familyRepository.findByParent(user).getId()==(familyRepository.findByChild(matchingUser).getId())){
-                family=familyRepository.findByParent(user);
-
-            }else{
+            if(familyRepository.findByParent(user)==null){
                 family=familyRepository.save(Family.builder()
                         .child(matchingUser.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
                         .parent(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
                         .build());
-
+            }else{
+                family=familyRepository.findByParent(user);
             }
 
+
             familyId=family.getId();
+
             postMatchingRes= PostMatchingRes.builder()
                     .matchingUserName(family.getChild().getName())
                     .familyId(familyId)
@@ -290,18 +291,14 @@ public class UserService {
             Family family=null;
 
 
-            System.out.println(familyRepository.findByChild(user).getId());
-            System.out.println(familyRepository.findByParent(matchingUser).getId());
-            // 이미 매칭이 됐을 경우
-            if(Objects.equals(familyRepository.findByChild(user).getId(), familyRepository.findByParent(matchingUser).getId())){
-                family=familyRepository.findByChild(user);
-
-            }else{
+            if(familyRepository.findByChild(user)==null){
                 family=familyRepository.save(Family.builder()
-                        .child(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
-                        .parent(matchingUser.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                        .child(matchingUser.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
+                        .parent(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)))
                         .build());
-
+            }else{
+                // 이미 매칭이 됐을 경우
+                family=familyRepository.findByChild(user);
             }
 
 

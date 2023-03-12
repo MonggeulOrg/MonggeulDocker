@@ -74,7 +74,8 @@ public class HomeService {
     public List<GetRecentDiaryRes> getRecentDiary(String userEmail){
         Optional<User>user=userRepository.findByEmail(userEmail);
         String role=user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getRole().getRoleCode();
-        List<Diary> diaryList=new ArrayList<>();
+        List<Diary> diaryList;
+        List<Diary> topFiveDiaryList=new ArrayList<>(5);
         List<GetRecentDiaryRes> getRecentDiaryResList=new ArrayList<>();
         if(role.equals(MOM)||role.equals(DAD)){
             diaryList=diaryRepository.findParentRecentPost(user.get().getId());
@@ -86,6 +87,7 @@ public class HomeService {
                             .imgUrl(diary.getParentImageURL())
                             .build()
             ).collect(Collectors.toList());
+
 
 
         }else if(role.equals(SON)||role.equals(DAU)){
