@@ -15,12 +15,14 @@ import com.cmc.monggeul.global.config.error.ErrorCode;
 import com.cmc.monggeul.global.config.error.exception.BaseException;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
 import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
+import com.cmc.monggeul.global.config.redis.RedisDao;
 import com.cmc.monggeul.global.config.security.SecurityConfig;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
 import com.cmc.monggeul.global.config.security.userDetails.CustomUserDetailService;
 import com.cmc.monggeul.global.util.AES256;
 import com.cmc.monggeul.global.util.GenerateCertNumber;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.lettuce.core.models.role.RedisInstance;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -46,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final RedisDao redisDao;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final FamilyRepository familyRepository;
@@ -63,6 +67,8 @@ public class UserService {
     private final GoogleOAuth googleOAuth;
 
     private final KakaoService kakaoService;
+
+
 
 
 
@@ -111,10 +117,7 @@ public class UserService {
         // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
         // refresh token을 복호화한 후 만료기한을 redis에 저장할 것
         DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
-        System.out.println(decodedJWT.getToken().toString());
-
-        redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+        redisDao.setValues(authentication,tokenDto.getRefreshToken(),Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())));
 
         return PostLoginRes.builder()
                 .grantType(tokenDto.getGrantType())
@@ -168,12 +171,10 @@ public class UserService {
         // redis에 refresh token 저장
         // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
         // refresh token을 복호화한 후 만료기한을 redis에 저장할 것
+
+
         DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
-        System.out.println(decodedJWT.getToken().toString());
-
-        redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
-
+        redisDao.setValues(authentication,tokenDto.getRefreshToken(),Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())));
         return PostLoginRes.builder()
                 .grantType(tokenDto.getGrantType())
                 .accessToken(tokenDto.getAccessToken())
@@ -206,9 +207,6 @@ public class UserService {
 
             // 유저 role 저장
             Role role=roleRepository.findByRoleCode(postAppleLoginReq.getRole());
-
-
-
             User userSave=User.builder()
                     .name(postAppleLoginReq.getUserName())
                     .email(postAppleLoginReq.getAppleEmail())
@@ -225,21 +223,17 @@ public class UserService {
             throw new BaseException(ErrorCode.EMAIL_ALREADY_EXIST);
         }
 
-
-
         Authentication authentication=new UsernamePasswordAuthenticationToken(postAppleLoginReq.getAppleEmail(),null,null);
         TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
         Optional<User> user=userRepository.findByEmail(postAppleLoginReq.getAppleEmail());
 
+
         // redis에 refresh token 저장
         // 4. RefreshToken Redis 저장 (expirationTime 설정을 통해 자동 삭제 처리)
         // refresh token을 복호화한 후 만료기한을 redis에 저장할 것
+
         DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
-        System.out.println(decodedJWT.getToken().toString());
-
-        redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
-
+        redisDao.setValues(authentication,tokenDto.getRefreshToken(),Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())));
         return PostLoginRes.builder()
                 .grantType(tokenDto.getGrantType())
                 .accessToken(tokenDto.getAccessToken())
@@ -539,10 +533,7 @@ public class UserService {
             Authentication authentication=new UsernamePasswordAuthenticationToken(kakaoUserDto.getEmail(),null,null);
             TokenDto tokenDto= JwtTokenProvider.generateToken(authentication);
             DecodedJWT decodedJWT= JWT.decode(tokenDto.getRefreshToken());
-            System.out.println(decodedJWT.getToken().toString());
-
-            redisTemplate.opsForValue()
-                    .set("RT:" + authentication.getName(),tokenDto.getRefreshToken(), Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())), TimeUnit.MILLISECONDS);
+            redisDao.setValues(authentication,tokenDto.getRefreshToken(),Long.parseLong(String.valueOf(decodedJWT.getExpiresAt().getTime())));
 
            postLoginRes= PostLoginRes.builder()
                     .grantType(tokenDto.getGrantType())
@@ -600,6 +591,46 @@ public class UserService {
 
         }
         return postLoginRes;
+    }
+
+    //리프레쉬토큰 발급
+
+    public PostLoginRes reissue(String userEmail) throws JsonProcessingException {
+        String rtkInRedis =redisDao.getValues(userEmail);
+        if (Objects.isNull(rtkInRedis)) throw new BaseException(ErrorCode.EXPIRED_AUTHENTICATION);
+        System.out.println("redis:"+rtkInRedis);
+        String rtkEmail=jwtTokenProvider.getUserEmailFromJWT(rtkInRedis);
+        TokenDto tokenDto=jwtTokenProvider.reissueAtk(userEmail,rtkEmail);
+        Optional<User> user=userRepository.findByEmail(userEmail);
+        return PostLoginRes.builder()
+                .grantType(tokenDto.getGrantType())
+                .accessToken(tokenDto.getAccessToken())
+                .refreshToken(tokenDto.getRefreshToken())
+                .profileImg(user.orElseThrow().getProfileImgUrl())
+                .code(user.orElseThrow().getMatchingCode())
+                .build();
+
+
+    }
+
+    public PostLogoutRes logout(String userEmail,String jwtToken){
+        Optional<User> user=userRepository.findByEmail(userEmail);
+        // 3. Redis 에서 해당 User email 로 저장된 Refresh Token 이 있는지 여부를 확인 후 있을 경우 삭제합니다.
+        if (redisDao.getValues(userEmail) != null) {
+            // Refresh Token 삭제
+            redisDao.deleteValues(userEmail);
+        }
+
+        // 4. 해당 Access Token 유효시간 가지고 와서 BlackList 로 저장하기
+        Long expiration = jwtTokenProvider.getExpiration(jwtToken);
+
+        redisTemplate.opsForValue()
+                .set(jwtToken, "logout", expiration, TimeUnit.MILLISECONDS);
+
+        return  PostLogoutRes.builder()
+                .userEmail(user.orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST)).getEmail())
+                .build();
+
     }
 
 

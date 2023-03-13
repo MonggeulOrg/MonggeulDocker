@@ -12,14 +12,17 @@ import com.cmc.monggeul.global.config.oauth.google.GoogleOAuth;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuthService;
 import com.cmc.monggeul.global.config.oauth.google.GoogleOAuthToken;
 import com.cmc.monggeul.global.config.oauth.kakao.KakaoService;
+import com.cmc.monggeul.global.config.redis.RedisDao;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
 import com.cmc.monggeul.global.config.security.jwt.TokenDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +47,8 @@ public class UserController {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final RedisDao redisDao;
 
 
     // == 백엔드 카카오 로그인 테스트 ==
@@ -260,6 +265,34 @@ public class UserController {
         return ResponseEntity.ok(new BaseResponse<>(postLoginRes));
 
 
+    }
+
+    // 리프레쉬토큰 발급
+    @ApiOperation(
+            value = "[로그인] refreshToken을 통한 accessToken 재발급 ")
+    @GetMapping("/reissue")
+   public ResponseEntity<BaseResponse<PostLoginRes>> reissue(HttpServletRequest request) throws JsonProcessingException {
+
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        PostLoginRes postLoginRes=userService.reissue(userEmail);
+        System.out.println(postLoginRes.getAccessToken());
+        return ResponseEntity.ok(new BaseResponse<>(postLoginRes));
+
+    }
+
+    // 로그아웃
+    @ApiOperation(
+            value = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<BaseResponse<PostLogoutRes>> logout(HttpServletRequest request){
+        String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
+        String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+
+        PostLogoutRes postLogoutRes=userService.logout(userEmail,jwtToken);
+
+
+        return  ResponseEntity.ok(new BaseResponse<>(postLogoutRes));
     }
 
 
