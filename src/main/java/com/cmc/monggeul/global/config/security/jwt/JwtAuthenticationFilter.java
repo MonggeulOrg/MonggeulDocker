@@ -2,27 +2,23 @@ package com.cmc.monggeul.global.config.security.jwt;
 
 import com.cmc.monggeul.global.config.error.BaseResponse;
 import com.cmc.monggeul.global.config.error.ErrorCode;
-import com.cmc.monggeul.global.config.error.exception.BaseException;
-import com.cmc.monggeul.global.config.error.exception.JwtException;
+import com.cmc.monggeul.global.config.redis.RedisDao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.connector.Response;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.jar.JarException;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +41,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-    }
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RedisDao redisDao;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) { //이 필터 안걸치는 path
@@ -70,7 +66,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         pathMatcher.match("/swagger-ui/**", path)&&request.getMethod().equals("GET") ||
                         pathMatcher.match("/favicon.ico", path) ||
                         pathMatcher.match("/swagger-resources/**", path))||
-                        pathMatcher.match("/v3/api-docs", path)&&request.getMethod().equals("GET") ;
+                        pathMatcher.match("/v3/api-docs", path)&&request.getMethod().equals("GET")||
+                        pathMatcher.match("/user/logout", path)&&request.getMethod().equals("POST");
     }
 
 
@@ -87,13 +84,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             sendErrorResponse(response,ErrorCode.TOKEN_NOT_EXIST);
         }
         else  {
-            try{
-                String userEmail = JwtTokenProvider.getUserEmailFromJWT(jwt); //jwt에서 사용자 id를 꺼낸다.
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userEmail, null, null); //id를 인증한다.
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); //기본적으로 제공한 details 세팅
-                SecurityContextHolder.getContext().setAuthentication(authentication); //세션에서 계속 사용하기 위해 securityContext에 Authentication 등록
+            try{
+                //Redis 에 해당 accessToken logout 여부 확인
+                String isLogout = redisDao.getValues(jwt);
+                if (ObjectUtils.isEmpty(isLogout)) {
+                    String userEmail = JwtTokenProvider.getUserEmailFromJWT(jwt); //jwt에서 사용자 id를 꺼낸다.
+
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userEmail, null, null); //id를 인증한다.
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); //기본적으로 제공한 details 세팅
+                    SecurityContextHolder.getContext().setAuthentication(authentication); //세션에서 계속 사용하기 위해 securityContext에 Authentication 등록
+
+
+                }
                 filterChain.doFilter(request, response);
+
+
 
                 // catch 구문 jwt 토큰 유효성 검사
             }catch (IllegalArgumentException e) {

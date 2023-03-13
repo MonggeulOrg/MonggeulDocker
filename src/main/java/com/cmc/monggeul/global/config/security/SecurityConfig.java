@@ -1,5 +1,6 @@
 package com.cmc.monggeul.global.config.security;
 
+import com.cmc.monggeul.global.config.redis.RedisDao;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationEntryPoint;
 import com.cmc.monggeul.global.config.security.jwt.JwtAuthenticationFilter;
 import com.cmc.monggeul.global.config.security.jwt.JwtTokenProvider;
@@ -19,7 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfig  {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    private final RedisDao redisDao;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -32,11 +35,12 @@ public class SecurityConfig  {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //jwt 사용
                 .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,redisDao), UsernamePasswordAuthenticationFilter.class);
 
 
 
