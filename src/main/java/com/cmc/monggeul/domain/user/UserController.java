@@ -273,10 +273,12 @@ public class UserController {
     @GetMapping("/reissue")
    public ResponseEntity<BaseResponse<PostLoginRes>> reissue(HttpServletRequest request) throws JsonProcessingException {
 
+        System.out.println("reissue");
         String jwtToken=jwtAuthenticationFilter.getJwtFromRequest(request);
         String userEmail=jwtTokenProvider.getUserEmailFromJWT(jwtToken);
+        System.out.println(userEmail);
         PostLoginRes postLoginRes=userService.reissue(userEmail);
-        System.out.println(postLoginRes.getAccessToken());
+
         return ResponseEntity.ok(new BaseResponse<>(postLoginRes));
 
     }
