@@ -597,8 +597,8 @@ public class UserService {
 
     public PostLoginRes reissue(String userEmail) throws JsonProcessingException {
         String rtkInRedis =redisDao.getValues(userEmail);
+
         if (Objects.isNull(rtkInRedis)) throw new BaseException(ErrorCode.EXPIRED_AUTHENTICATION);
-        System.out.println("redis:"+rtkInRedis);
         String rtkEmail=jwtTokenProvider.getUserEmailFromJWT(rtkInRedis);
         TokenDto tokenDto=jwtTokenProvider.reissueAtk(userEmail,rtkEmail);
         Optional<User> user=userRepository.findByEmail(userEmail);
