@@ -52,7 +52,7 @@ public class JwtTokenProvider {
                 .setSubject((String) authentication.getPrincipal()) // 사용자
                 .setIssuedAt(new Date()) // 현재 시간 기반으로 생성
                 // 1일 : 1000 * 60 * 60 * 24
-                .setExpiration(new Date(now.getTime()+1000 * 60*60*24)) // 만료 시간 세팅 (1분)
+                .setExpiration(new Date(now.getTime()+1000 * 60*60*24))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET) // 사용할 암호화 알고리즘, signature에 들어갈 secret 값 세팅
                 .compact();
 
@@ -107,7 +107,7 @@ public class JwtTokenProvider {
         String accessToken=Jwts.builder()
                 .setSubject((String) authentication.getPrincipal()) // 사용자
                 .setIssuedAt(new Date()) // 현재 시간 기반으로 생성
-                .setExpiration(new Date(now.getTime()+1000 * 60*60*24)) // 만료 시간 세팅 (1일)
+                .setExpiration(new Date(now.getTime()+1000 * 60*60*24))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET) // 사용할 암호화 알고리즘, signature에 들어갈 secret 값 세팅
                 .compact();
 
