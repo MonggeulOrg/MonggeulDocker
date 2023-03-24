@@ -124,6 +124,7 @@ public class GlobalExceptionHandler {
     //Runtime Exception
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> RuntimeException(RuntimeException e, HttpServletRequest request) {
+        log.error(e.getMessage(),"loginErro");
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
