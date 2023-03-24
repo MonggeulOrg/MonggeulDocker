@@ -77,6 +77,9 @@ public class UserService {
 
     public PostLoginRes kakaoLogin(PostKakaoLoginReq postKakaoLoginReq, KakaoUserDto kakaoUserDto) throws BaseException {
 
+        log.error("kakao accessToken={}",postKakaoLoginReq.getKakaoAccessToken(),"카카오 accessToken");
+        log.error("kakao name={}",postKakaoLoginReq.getUserName(),"카카오 유저 이름");
+        log.error("kakao email={}",kakaoUserDto.getEmail(),"카카오 이메일");
         // 신규 가입 유저일경우
         if(userRepository.findByEmail(kakaoUserDto.getEmail()).isEmpty()){
 
