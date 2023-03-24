@@ -1,6 +1,7 @@
 package com.cmc.monggeul.global.config.oauth.google;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.text.ParseException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GoogleOAuthService {
     private final GoogleOAuth googleOauth;
     private final HttpServletResponse response;
@@ -25,7 +27,6 @@ public class GoogleOAuthService {
         ResponseEntity<String> accessTokenResponse= googleOauth.requestAccessToken(code);
         //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
         GoogleOAuthToken oAuthToken=googleOauth.getAccessToken(accessTokenResponse);
-        System.out.println(oAuthToken.getAccess_token());
         return oAuthToken;
 
     }

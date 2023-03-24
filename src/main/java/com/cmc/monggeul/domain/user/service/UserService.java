@@ -27,6 +27,7 @@ import io.lettuce.core.models.role.RedisInstance;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -47,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final RedisDao redisDao;
@@ -89,7 +91,7 @@ public class UserService {
                 }
 
             }
-            System.out.println(matchCode);
+            log.error("matchingcode={}",matchCode,"매칭코드");
 
             // 유저 role 저장
             Role role=roleRepository.findByRoleCode(postKakaoLoginReq.getRole());
