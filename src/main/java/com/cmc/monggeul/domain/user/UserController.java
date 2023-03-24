@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @RequestMapping("/user")
 @Api(tags = "로그인,매칭,마이페이지 관련")
+@Slf4j
 public class UserController {
     // 생성자 주입
     private final KakaoService kakaoService;

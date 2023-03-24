@@ -32,6 +32,17 @@ spring:
             client-id: 1078527416021-r7gbip9cjhnhmm8hpoa636tevboeg77t.apps.googleusercontent.com
             client-secret: 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
 
+logging:
+  level:
+    org.springframework.web : debug
+    sql: error
+    jdbc: off
+    jdbc.sqlonly: debug
+
+  file:
+    name: /logs/product.log
+    max-history: 9999999
+    max-size: 100MB
 
 
 
