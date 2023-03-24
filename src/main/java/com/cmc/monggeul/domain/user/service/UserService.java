@@ -89,6 +89,7 @@ public class UserService {
                 }
 
             }
+            System.out.println(matchCode);
 
             // 유저 role 저장
             Role role=roleRepository.findByRoleCode(postKakaoLoginReq.getRole());
