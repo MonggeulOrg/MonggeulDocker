@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/diary")
 @Api(tags = "기록하기")
 public class DiaryController{
-
+    //
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtTokenProvider jwtTokenProvider;
     private final DiaryService diaryService;

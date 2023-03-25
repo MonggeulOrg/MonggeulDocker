@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class GetAlertRes {
-
+    //
     private Long alertId;
     private String senderName;
     private LocalDateTime createdAt;
