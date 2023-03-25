@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/home")
 @Api(tags = "홈화면")
 public class HomeController {
-
+    //
 
     private final HomeService homeService;
 

@@ -90,7 +90,7 @@ public class DiaryService {
                 categoryList=categoryRepository.findDauMomCategory();
 
             }else if(matchingUser.get().getRole().getRoleCode().equals(DAD)){
-                categoryList=categoryRepository.findDauMomCategory();
+                categoryList=categoryRepository.findDauDadCategory();
 
             }
 
